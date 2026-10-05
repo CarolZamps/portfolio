@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens SEMÂNTICOS. Componentes só usam estes nomes
+ * (bg-accent, bg-cta, bg-note-1, rounded-card...).
+ * Tema: Pop (pink + lima + cobalto) com fundo pontilhado de board.
+ */
+@theme {
+  /* Base */
+  --color-ink: #151515;
+  --color-ink-muted: #55555c;
+  --color-paper: #ffffff;
+  --color-surface: #ffffff;
+  --color-line: #ececec;
+  --color-pattern: #d9d9e0;
+
+  /* Marca */
+  --color-accent: #c6f432;
+  --color-accent-soft: #e4fa9c;
+  --color-cta: #ff3e9a;
+  --color-cta-hover: #e02a83;
+  --color-on-cta: #ffffff;
+
+  /* Notas / stickers */
+  --color-note-1: #c6f432;
+  --color-note-2: #ff9fcd;
+  --color-note-3: #9fb0ff;
+  --color-note-4: #ffcf85;
+  --color-note-5: #b8f1ff;
+
+  /* Fita crepe */
+  --color-tape: #ece0c2;
+
+  /* Tipografia */
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-hand: var(--font-caveat), cursive;
+
+  /* Raios */
+  --radius-chip: 999px;
+  --radius-btn: 8px;
+  --radius-note: 4px;
+  --radius-card: 24px;
+  --radius-panel: 40px;
+
+  /* Sombras */
+  --shadow-note: 0 1px 2px rgb(28 28 30 / 0.06), 0 8px 24px rgb(28 28 30 / 0.08);
+}
+
+/* Fundo pontilhado + sombras dos stickers */
+:root {
+  --bg-image: radial-gradient(var(--color-pattern) 1px, transparent 1px);
+  --bg-size: 24px 24px;
+  --display-tracking: -0.04em;
+
+  --drop-sticker: drop-shadow(0 2px 2px rgb(28 28 30 / 0.16))
+    drop-shadow(0 8px 12px rgb(28 28 30 / 0.14));
+  --drop-sticker-lift: drop-shadow(0 6px 6px rgb(28 28 30 / 0.16))
+    drop-shadow(0 20px 24px rgb(28 28 30 / 0.18));
+}
+
+/* Grifo de marca-texto que se desenha da esquerda pra direita ao carregar */
+@keyframes marker-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@utility animate-marker {
+  transform-origin: left center;
+  animation: marker-draw 900ms cubic-bezier(0.65, 0, 0.35, 1) 350ms both;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+/* Pedaço de fita crepe: bordas serrilhadas nas pontas, levemente translúcida */
+@utility tape {
+  background-color: color-mix(in srgb, var(--color-tape) 88%, transparent);
+  box-shadow: 0 1px 2px rgb(28 28 30 / 0.12);
+  clip-path: polygon(
+    0 8%, 4% 0, 8% 10%, 12% 0, 88% 0, 92% 10%, 96% 0, 100% 8%,
+    98% 50%, 100% 92%, 96% 100%, 92% 90%, 88% 100%, 12% 100%, 8% 90%, 4% 100%, 0 92%, 2% 50%
+  );
+}
+
+@utility die-cut {
+  filter: url(#die-cut) var(--drop-sticker);
+  transition: filter 200ms ease;
+}
+
+/* Sombra bem leve, pra sticker grande que fica parado (avatar) */
+@utility die-cut-soft {
+  filter: url(#die-cut) drop-shadow(0 1px 1px rgb(28 28 30 / 0.1))
+    drop-shadow(0 3px 6px rgb(28 28 30 / 0.08));
+}
+
+@utility die-cut-lift {
+  filter: url(#die-cut) var(--drop-sticker-lift);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-paper);
+    background-image: var(--bg-image);
+    background-size: var(--bg-size);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    transition:
+      background-color 300ms ease,
+      color 300ms ease;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: var(--display-tracking);
+  }
+}
