@@ -1,24 +1,20 @@
 import type { Tool } from "@/data/projects";
-import { EmojiSticker } from "./EmojiSticker";
 import { Sticker } from "./Sticker";
 
 /**
- * Rodapé do case estilo moodboard: os stickers "colam" um a um,
- * na horizontal, quando o rodapé entra na tela.
+ * Ferramentas do case, ao lado do título: stickers pequenos que "colam"
+ * um a um quando a página abre (já estão na tela, então disparam na hora).
  */
 export function StickerBoard({ tools }: { tools: Tool[] }) {
   return (
-    <aside
-      aria-labelledby="ferramentas"
-      className="mt-20 border-t-2 border-dashed border-line pt-10"
-    >
+    <aside aria-labelledby="ferramentas" className="lg:max-w-sm">
       <h2
         id="ferramentas"
-        className="mb-10 -rotate-1 font-hand text-3xl font-bold tracking-normal text-ink-muted"
+        className="mb-4 font-hand text-2xl font-bold tracking-normal text-ink-muted lg:text-right"
       >
-        o que usei por aqui <EmojiSticker emoji="✏️" rotate={10} />
+        o que usei por aqui
       </h2>
-      <ul className="flex flex-wrap items-center gap-x-10 gap-y-12 pb-8">
+      <ul className="flex flex-wrap items-center gap-x-5 gap-y-7 lg:justify-end">
         {tools.map((tool, i) => (
           <Sticker key={tool.name} tool={tool} index={i} />
         ))}

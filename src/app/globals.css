@@ -93,12 +93,6 @@
   transition: filter 200ms ease;
 }
 
-/* Sombra bem leve, pra sticker grande que fica parado (avatar) */
-@utility die-cut-soft {
-  filter: url(#die-cut) drop-shadow(0 1px 1px rgb(28 28 30 / 0.1))
-    drop-shadow(0 3px 6px rgb(28 28 30 / 0.08));
-}
-
 @utility die-cut-lift {
   filter: url(#die-cut) var(--drop-sticker-lift);
 }

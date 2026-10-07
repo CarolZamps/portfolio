@@ -3,7 +3,6 @@ import { noteBg, type Project } from "@/data/projects";
 import { EmojiSticker } from "./EmojiSticker";
 import { ShotFrame } from "./ShotFrame";
 
-const tilt = ["-rotate-1", "rotate-1", "rotate-0", "-rotate-2"];
 
 /** Grifo lima que "desenha" embaixo do título no hover. */
 const titleMarker =
@@ -50,13 +49,14 @@ function Cover({ project, action }: { project: Project; action?: boolean }) {
 }
 
 export function ProjectCard({ project, index }: { project: Project; index: number }) {
-  const rotation = tilt[index % tilt.length];
+  // retos em repouso; inclinam de leve só no hover (direção alterna por card)
+  const hoverTilt = index % 2 ? "hover:rotate-1" : "hover:-rotate-1";
 
   if (project.status === "soon") {
     return (
       <div
         aria-disabled
-        className={`relative cursor-not-allowed rounded-card bg-surface p-3 shadow-note ${rotation}`}
+        className="relative cursor-not-allowed rounded-card bg-surface p-3 shadow-note"
       >
         {/* Fita crepe nas bordas: ainda sendo grudado no mural */}
         <span aria-hidden className="tape absolute -top-3 left-8 z-10 h-7 w-28 -rotate-6" />
@@ -86,7 +86,7 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
     <Link
       href={`/projetos/${project.slug}`}
       aria-label={`Ver case: ${project.title}`}
-      className={`group block rounded-card bg-surface p-3 shadow-note outline-none transition-transform duration-300 hover:-translate-y-1 hover:rotate-0 focus-visible:ring-2 focus-visible:ring-ink ${rotation}`}
+      className={`group block rounded-card bg-surface p-3 shadow-note outline-none transition-transform duration-300 hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-ink ${hoverTilt}`}
     >
       <Cover project={project} action />
       <div className="p-4">

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Caveat, Inter } from "next/font/google";
 import { DieCutFilter } from "@/components/DieCutFilter";
 import { Header } from "@/components/Header";
-import { EmojiSticker } from "@/components/EmojiSticker";
 import { share, shareMetadata, site } from "@/data/site";
 import "./globals.css";
 
@@ -42,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main className="flex-1">{children}</main>
         <footer className="px-6 py-10 text-center font-hand text-2xl text-ink-muted">
-          feito por mim mesma <EmojiSticker emoji="👽" rotate={8} />
+          feito por mim mesma
         </footer>
       </body>
     </html>
