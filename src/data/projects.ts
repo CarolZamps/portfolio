@@ -80,6 +80,22 @@ const figma: Tool = {
   color: "lilac",
 };
 
+const dovetail: Tool = {
+  name: "Dovetail",
+  logo: "/stickers/dovetail.svg",
+  emoji: "🎙️",
+  note: "pesquisa com usuários",
+  color: "pink",
+};
+
+const maze: Tool = {
+  name: "Maze",
+  logo: "/stickers/maze.svg",
+  emoji: "🧪",
+  note: "testes de usabilidade",
+  color: "teal",
+};
+
 const shot = (
   src: string,
   alt: string,
@@ -166,7 +182,7 @@ export const projects: Project[] = [
         href: "https://play.google.com/store/apps/details?id=br.com.monis",
       },
     ],
-    tools: [figma],
+    tools: [figma, dovetail, maze],
   },
   {
     slug: "monis-viagens",
@@ -232,6 +248,8 @@ export const projects: Project[] = [
     links: [{ label: "monis.com.br", href: "https://monis.com.br/" }],
     tools: [
       figma,
+      dovetail,
+      maze,
       {
         name: "Framer",
         logo: "/stickers/framer.svg",
