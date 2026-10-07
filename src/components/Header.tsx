@@ -8,7 +8,7 @@ export function Header() {
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-2">
         <Link href="/" className="flex items-center gap-2 font-display text-base font-bold">
           <EmojiSticker emoji="👽" rotate={-8} className="text-3xl" />
-          <span className="hidden sm:inline">{site.name}</span>
+          <span>{site.name}</span>
         </Link>
 
         <a
