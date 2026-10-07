@@ -1,5 +1,5 @@
 export const site = {
-  name: "Carol Zamprônio",
+  name: "Carolina Zamprônio",
   url: "https://carolinazampronio.com",
   linkedin: "https://www.linkedin.com/in/carolinazampronio/",
 };

@@ -9,7 +9,13 @@ export default function Home() {
         <div>
           <p className="mb-5 inline-flex -rotate-2 items-center gap-2 rounded-note bg-accent px-3 py-1 font-hand text-2xl shadow-note">
             oi, pode me chamar de Carol
-            <EmojiSticker emoji="👋" index={0} rotate={-8} className="text-3xl" />
+            <EmojiSticker
+              emoji="👋"
+              index={0}
+              rotate={-8}
+              className="text-3xl"
+              hint="Ou Zamps, como você preferir"
+            />
           </p>
           <h1 className="text-5xl leading-[1.05] font-semibold md:text-7xl">
             Design orientado a negócio,{" "}
