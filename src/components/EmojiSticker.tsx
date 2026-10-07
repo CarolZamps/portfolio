@@ -42,14 +42,14 @@ export function EmojiSticker({
     <span
       tabIndex={0}
       aria-label={hint}
-      className="group relative inline-block cursor-default outline-none"
+      className="group relative inline-flex cursor-default outline-none"
     >
       {sticker}
       <span
         aria-hidden
-        className="pointer-events-none absolute top-full right-0 z-20 mt-1 translate-y-[-4px] font-hand text-xl font-bold whitespace-nowrap text-ink-muted opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+        className="pointer-events-none absolute right-0 bottom-full z-20 mb-1 translate-y-1 font-hand text-xl font-bold whitespace-nowrap text-ink-muted opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
       >
-        ↳ {hint}
+        {hint} ↴
       </span>
     </span>
   );

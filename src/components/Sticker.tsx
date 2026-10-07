@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { noteBg, type Tool } from "@/data/projects";
 import { stickerHover, stickerIn } from "./stickerMotion";
 
@@ -34,6 +34,22 @@ type Props = {
 export function Sticker({ tool, index, baseDelay = 0.15 }: Props) {
   const reduce = useReducedMotion();
   const [hover, setHover] = useState(false);
+  // A anotação do hover mede a si mesma e se desloca pra nunca vazar da tela.
+  const noteRef = useRef<HTMLSpanElement>(null);
+  const [shift, setShift] = useState(0);
+
+  function keepNoteOnScreen() {
+    const el = noteRef.current;
+    if (!el) return;
+    const margin = 12;
+    const r = el.getBoundingClientRect();
+    const left = r.left - shift;
+    const right = r.right - shift;
+    let next = 0;
+    if (right > innerWidth - margin) next = innerWidth - margin - right;
+    if (left + next < margin) next = margin - left;
+    setShift(next);
+  }
 
   const rotate = Math.round((seeded(tool.name, 7) - 0.5) * 24); // -12..12°
   const nudge = Math.round((seeded(tool.name, 13) - 0.5) * 10); // -5..5px (vertical)
@@ -51,9 +67,15 @@ export function Sticker({ tool, index, baseDelay = 0.15 }: Props) {
       viewport={{ once: true, amount: 0.6 }}
       transition={{ type: "spring", stiffness: 300, damping: 22 }}
       whileHover={lift && { ...lift, zIndex: 20 }}
-      onHoverStart={() => setHover(true)}
+      onHoverStart={() => {
+        keepNoteOnScreen();
+        setHover(true);
+      }}
       onHoverEnd={() => setHover(false)}
-      onFocus={() => setHover(true)}
+      onFocus={() => {
+        keepNoteOnScreen();
+        setHover(true);
+      }}
       onBlur={() => setHover(false)}
       tabIndex={0}
     >
@@ -84,10 +106,12 @@ export function Sticker({ tool, index, baseDelay = 0.15 }: Props) {
 
       {!tool.callout && (
         <motion.span
+          ref={noteRef}
           aria-hidden={!hover}
           initial={false}
+          style={{ translate: `${shift}px 0` }}
           animate={{ opacity: hover ? 1 : 0, y: hover ? 0 : -4 }}
-          className="pointer-events-none absolute top-full left-0 mt-1 font-hand text-lg whitespace-nowrap text-ink-muted"
+          className="pointer-events-none absolute top-full left-0 mt-1 w-max max-w-52 font-hand text-lg leading-tight text-ink-muted"
         >
           ↳ {tool.note}
         </motion.span>

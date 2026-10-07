@@ -68,7 +68,6 @@ export type Project = {
   status?: "soon";
   cover?: Shot;
   story: StoryBlock[];
-  links: { label: string; href: string }[];
   tools: Tool[];
 };
 
@@ -116,7 +115,6 @@ export const projects: Project[] = [
     color: "yellow",
     status: "soon",
     story: [],
-    links: [],
     tools: [],
   },
   {
@@ -174,12 +172,6 @@ export const projects: Project[] = [
         kind: "media",
         shots: [shot("/projects/monis-app/04.png", "Mosaico de telas do Monis app", 1810, 1200, [641, 425, "#703ffe", 0, 0, 641, 425])],
         caption: "algumas das telas que desenhei ao longo da jornada",
-      },
-    ],
-    links: [
-      {
-        label: "Google Play",
-        href: "https://play.google.com/store/apps/details?id=br.com.monis",
       },
     ],
     tools: [figma, dovetail, maze],
@@ -245,7 +237,6 @@ export const projects: Project[] = [
         caption: "a landing completa",
       },
     ],
-    links: [{ label: "monis.com.br", href: "https://monis.com.br/" }],
     tools: [
       figma,
       dovetail,
@@ -300,9 +291,6 @@ export const projects: Project[] = [
         ],
         caption: "do detalhe dos cards à página completa",
       },
-    ],
-    links: [
-      { label: "startempreendedor.com", href: "https://startempreendedor.com/home-page" },
     ],
     tools: [figma],
   },
