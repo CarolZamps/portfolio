@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { EmojiSticker } from "@/components/EmojiSticker";
 import { ShotFrame } from "@/components/ShotFrame";
 import { StickerBoard } from "@/components/StickerBoard";
 import { Story } from "@/components/Story";
 import { getProject, projects } from "@/data/projects";
-import { shareMetadata } from "@/data/site";
+import { shareMetadata, site } from "@/data/site";
 
 // Cases "em breve" não têm página
 export function generateStaticParams() {
@@ -61,13 +62,26 @@ export default async function ProjectPage({ params }: PageProps<"/projetos/[slug
         {project.tools.length > 0 && <StickerBoard tools={project.tools} />}
       </header>
 
-      {project.cover && (
-        <ShotFrame shot={project.cover} priority className="mt-12 shadow-note" />
+      {(project.hero ?? project.cover) && (
+        <ShotFrame shot={(project.hero ?? project.cover)!} priority className="mt-12 shadow-note" />
       )}
 
       <div className="mt-20 md:mt-28">
         <Story blocks={project.story} />
       </div>
+
+      {/* Atalho escondido pro deck completo: discreto, sem texto visível até o hover/foco */}
+      {project.deck && (
+        <div className="mt-24 flex justify-end">
+          <EmojiSticker
+            emoji="🤫"
+            rotate={8}
+            className="text-2xl opacity-60 transition-opacity hover:opacity-100"
+            hint="psiu, tem uma versão em slides"
+            href={site.deckPath}
+          />
+        </div>
+      )}
     </article>
   );
 }
