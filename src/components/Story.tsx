@@ -3,6 +3,7 @@ import { ArchitectureDiagram } from "./ArchitectureDiagram";
 import { CountUp } from "./CountUp";
 import { Reveal } from "./Reveal";
 import { ShotFrame } from "./ShotFrame";
+import { Solution } from "./Solution";
 import { ABChart } from "./ABChart";
 import { HypothesisSketch, LauncherSim, TerminalSim } from "./Sims";
 import { WhatsAppPhone } from "./WhatsAppPhone";
@@ -166,6 +167,9 @@ function Block({ block }: { block: StoryBlock }) {
         </div>
       );
     }
+
+    case "solution":
+      return <Solution block={block} />;
 
     case "timeline":
       return (

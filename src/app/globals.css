@@ -1143,3 +1143,205 @@
     animation: none;
   }
 }
+
+/* ── Seção da solução (Solution.tsx): visuais ilustrativos dos cartões ── */
+.sol-resp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 10px 14px;
+}
+.sol-resp-frame {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  border: 1.5px solid var(--color-select);
+  border-radius: 12px;
+  background: var(--color-surface);
+  animation: sol-resize 7s ease-in-out infinite;
+}
+@keyframes sol-resize {
+  0%,
+  12% {
+    width: 100%;
+  }
+  45%,
+  62% {
+    width: 56%;
+  }
+  95%,
+  100% {
+    width: 100%;
+  }
+}
+.sol-resp-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sol-resp-head i {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-cta);
+}
+.sol-resp-head b {
+  height: 6px;
+  flex: 1;
+  border-radius: 3px;
+  background: var(--color-line);
+}
+.sol-resp-msg {
+  max-width: 90%;
+  padding: 5px 8px;
+  border-radius: 9px;
+  font-size: 0.68rem;
+  line-height: 1.3;
+}
+.sol-resp-msg.in {
+  align-self: flex-start;
+  background: #f0f1f4;
+}
+.sol-resp-msg.out {
+  align-self: flex-end;
+  background: var(--color-accent-soft);
+}
+.sol-resp-input {
+  height: 18px;
+  border: 1.5px solid var(--color-note-2);
+  border-radius: 6px;
+}
+.sol-resp-label {
+  font-family: var(--font-hand);
+  font-size: 1.1rem;
+  line-height: 1;
+  color: var(--color-ink-muted);
+}
+
+.sol-tokens {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 16px;
+  list-style: none;
+}
+.sol-tokens li {
+  display: grid;
+  grid-template-columns: 3.4rem 5.2rem 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.sol-tk {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+.sol-tokens code {
+  font-size: 0.7rem;
+  color: var(--color-select);
+}
+.sol-tv {
+  display: flex;
+  align-items: center;
+}
+.sol-sw {
+  display: flex;
+}
+.sol-sw i {
+  width: 20px;
+  height: 20px;
+  margin-right: -5px;
+  border: 2px solid var(--color-surface);
+  border-radius: 50%;
+}
+.sol-sp {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+.sol-sp i {
+  width: 8px;
+  border-radius: 2px;
+  background: var(--color-select);
+}
+.sol-sp i:nth-child(1) {
+  height: 8px;
+}
+.sol-sp i:nth-child(2) {
+  height: 14px;
+}
+.sol-sp i:nth-child(3) {
+  height: 22px;
+}
+.sol-rad {
+  width: 34px;
+  height: 22px;
+  border: 2px solid var(--color-ink);
+  border-radius: 10px 10px 10px 2px;
+}
+
+.sol-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  padding: 16px;
+}
+.sol-flow-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sol-flow-steps span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--color-line);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+.sol-flow-steps span.on {
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+}
+.sol-flow-q {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: sol-q-in 0.45s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
+.sol-flow-q span {
+  width: fit-content;
+  padding: 6px 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 999px;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-note);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+@keyframes sol-q-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sol-resp-frame,
+  .sol-flow-q {
+    animation: none;
+  }
+  .sol-resp-frame {
+    width: 70%;
+  }
+}
