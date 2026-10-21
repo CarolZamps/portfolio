@@ -111,7 +111,7 @@ export function Solution({ block }: { block: SolutionBlock }) {
 
       {/* palco largo e preto (como o do vídeo do ícone): o celular sobrepõe o desktop; paddings diferentes dão ar de colagem */}
       <div
-        className="rounded-card bg-black pt-10 pr-5 pb-6 pl-6 shadow-note md:pt-16 md:pr-10 md:pb-10 md:pl-14"
+        className="rounded-card bg-black pt-6 pr-3 pb-3 pl-4 shadow-note md:pt-9 md:pr-5 md:pb-5 md:pl-8"
       >
         <div className="relative">
           <div
