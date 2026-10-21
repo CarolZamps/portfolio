@@ -56,11 +56,26 @@ export type Stat = {
   count?: { to: number; decimals?: number; prefix?: string; suffix?: string };
 };
 
-export type Step = { label: string; title: string; text: string; shot?: Shot };
+export type Step = {
+  label: string;
+  title: string;
+  text: string;
+  shot?: Shot;
+  /** Simulação em CSS no lugar de imagem/vídeo (ver Sims.tsx). */
+  visual?: "terminal" | "launcher";
+};
 
 export type StoryBlock =
   /** Texto corrido, com título, eyebrow e chips opcionais. */
-  | { kind: "text"; eyebrow?: string; title?: string; text: string[]; chips?: string[] }
+  | {
+      kind: "text";
+      eyebrow?: string;
+      title?: string;
+      text: string[];
+      chips?: string[];
+      /** Visual ao lado do texto (número em destaque ou tela/vídeo). */
+      aside?: { stat?: Stat; shot?: Shot; visual?: "whatsapp" };
+    }
   /** Uma imagem larga, ou várias lado a lado. */
   | { kind: "media"; shots: Shot[]; caption?: string }
   /** Texto de um lado, tela do outro. */
@@ -167,6 +182,7 @@ export const projects: Project[] = [
           "Todo parceiro novo do iFood passa por um portal de ativação. São seis etapas obrigatórias, cerca de 40 minutos de configuração, antes da loja ir ao ar.",
         ],
         chips: ["Pagamento · 1 min", "Entrega · 10 min", "Horário · 5 min", "Minha loja · 5 min", "Financeiro · 10 min", "Cardápio · 10 min", "Conclusão"],
+        aside: { stat: { value: "~40 min", label: "de configuração, em 6 etapas obrigatórias", sub: "antes da loja ir ao ar" } },
       },
       {
         kind: "text",
@@ -175,23 +191,15 @@ export const projects: Project[] = [
         text: [
           "Entrevistas e forms recorrentes no produto apontavam falta de suporte durante a ativação: a mesma dor, pesquisa após pesquisa.",
           "O portal oferecia um FAQ estático, no rodapé da tela, sem nenhum canal para tirar dúvida no momento em que ela aparece.",
+          "A leitura: o parceiro não desistia por falta de vontade. Ele parava numa dúvida que ninguém estava lá para responder.",
         ],
-      },
-      {
-        kind: "stats",
-        items: [
-          {
+        aside: {
+          stat: {
             count: { to: 17258 },
             label: "sessões web sem nenhuma ajuda em tempo real",
             sub: "entre janeiro e março de 2026",
           },
-        ],
-      },
-      {
-        kind: "text",
-        text: [
-          "A leitura: o parceiro não desistia por falta de vontade. Ele parava numa dúvida que ninguém estava lá para responder.",
-        ],
+        },
       },
       {
         kind: "text",
@@ -201,6 +209,7 @@ export const projects: Project[] = [
           "A Diana é o agente de onboarding do iFood. Ela já funcionava como canal autônomo de captação e cadastro, e também respondia dúvidas sobre a plataforma.",
           "Tudo isso acontecia só pelo WhatsApp, fora do fluxo de quem estava configurando a loja. Quem estava no portal, no meio do setup, não alcançava nada disso.",
         ],
+        aside: { visual: "whatsapp" },
       },
       {
         kind: "text",
@@ -219,6 +228,9 @@ export const projects: Project[] = [
           "Na Vibe Coding Week, o time testou uma ideia: com IA, o mesmo profissional atua em mais de uma área sem perder a profundidade da sua especialidade. Designer entra em código, engenharia entra em design.",
           "Para mim não era experimento novo. Eu já vinha subindo código no produto, adequando componentes ao design system e ajustando conteúdo direto na interface. A semana só abriu espaço para ir mais longe.",
         ],
+        aside: {
+          shot: clip("campo", "Campo de futebol: profissionais do time de um lado, desafios do outro", 1400, 800, [641, 366, "var(--color-accent)", 0, 0, 641, 366]),
+        },
       },
       {
         kind: "diagram",
@@ -243,14 +255,16 @@ export const projects: Project[] = [
             label: "02 · Claude Code",
             title: "Tradução no Claude Code",
             text: "O esboço vira contexto. O componente nasce dentro dos padrões do repositório, lendo a documentação que o próprio time escreveu.",
+            visual: "terminal",
           },
           {
             label: "03 · Microinterações",
             title: "Refino das microinterações",
             text: "Transição, brilho e resposta ao hover, ajustados iteração a iteração até o gesto parecer natural.",
+            visual: "launcher",
           },
         ],
-        caption: "o vídeo do passo 1 é uma gravação real do Figma",
+        caption: "o vídeo do passo 1 é uma gravação real do Figma; os passos 2 e 3 são simulações do processo",
       },
       {
         kind: "steps",
@@ -274,11 +288,16 @@ export const projects: Project[] = [
         ],
       },
       {
-        kind: "text",
-        text: [
-          "Dia 1: entender a arquitetura com os devs. Dias 2 a 4: construir front e back e abrir os MRs. Dia 5: MVP rodando internamente, já usável. Depois, iterações e ajustes finos da engenharia.",
-          "O que foi inédito: eu já abria merge request antes, mas em ajustes pontuais no produto existente. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.",
+        kind: "steps",
+        title: "Cinco dias, do zero ao MVP",
+        items: [
+          { label: "Dia 1", title: "Entender", text: "A arquitetura, com os devs que a construíram." },
+          { label: "Dias 2 a 4", title: "Construir", text: "Front e back, e os merge requests abertos." },
+          { label: "Dia 5", title: "MVP rodando", text: "Internamente, já usável." },
+          { label: "Depois", title: "Iterar", text: "Ajustes finos da engenharia." },
         ],
+        caption:
+          "o inédito: eu já abria MR em ajustes pontuais. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.",
       },
       {
         kind: "split",

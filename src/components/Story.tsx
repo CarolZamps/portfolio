@@ -1,8 +1,9 @@
-import type { StoryBlock } from "@/data/projects";
+import type { Stat, StoryBlock } from "@/data/projects";
 import { ArchitectureDiagram } from "./ArchitectureDiagram";
 import { CountUp } from "./CountUp";
 import { Reveal } from "./Reveal";
 import { ShotFrame } from "./ShotFrame";
+import { LauncherSim, TerminalSim, WhatsAppPhone } from "./Sims";
 
 function Prose({
   eyebrow,
@@ -46,14 +47,41 @@ function Caption({ children }: { children: string }) {
   return <p className="mt-4 text-center font-hand text-2xl text-ink-muted">{children}</p>;
 }
 
+function StatCard({ item, index = 0, className = "" }: { item: Stat; index?: number; className?: string }) {
+  return (
+    <div
+      className={`flex flex-col justify-center rounded-card p-8 shadow-note ${index % 2 ? "rotate-1 bg-note-2" : "-rotate-1 bg-accent"} ${className}`}
+    >
+      <p className="font-display text-5xl font-bold tracking-tight md:text-6xl">
+        {item.count ? <CountUp {...item.count} /> : item.value}
+      </p>
+      <p className="mt-2 text-lg">{item.label}</p>
+      {item.sub && <p className="mt-1 text-sm font-medium text-ink-muted">{item.sub}</p>}
+    </div>
+  );
+}
+
 function Block({ block }: { block: StoryBlock }) {
   switch (block.kind) {
-    case "text":
+    case "text": {
+      const prose = (
+        <Prose eyebrow={block.eyebrow} title={block.title} text={block.text} chips={block.chips} />
+      );
+      if (!block.aside) return <div className="max-w-3xl">{prose}</div>;
+      const { stat, shot, visual } = block.aside;
       return (
-        <div className="max-w-3xl">
-          <Prose eyebrow={block.eyebrow} title={block.title} text={block.text} chips={block.chips} />
+        <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
+          {prose}
+          {visual === "whatsapp" ? (
+            <WhatsAppPhone />
+          ) : shot ? (
+            <ShotFrame shot={shot} className="shadow-note" />
+          ) : (
+            stat && <StatCard item={stat} className="min-h-44" />
+          )}
         </div>
       );
+    }
 
     case "split":
       // Frame bem horizontal fica pequeno numa coluna: empilha e usa a largura toda
@@ -99,16 +127,7 @@ function Block({ block }: { block: StoryBlock }) {
       return (
         <div className={`grid gap-6 ${block.items.length > 1 ? "sm:grid-cols-2" : "max-w-md"}`}>
           {block.items.map((item, i) => (
-            <div
-              key={item.label}
-              className={`rounded-card p-8 shadow-note ${i % 2 ? "rotate-1 bg-note-2" : "-rotate-1 bg-accent"}`}
-            >
-              <p className="font-display text-5xl font-bold tracking-tight md:text-6xl">
-                {item.count ? <CountUp {...item.count} /> : item.value}
-              </p>
-              <p className="mt-2 text-lg">{item.label}</p>
-              {item.sub && <p className="mt-1 text-sm font-medium text-ink-muted">{item.sub}</p>}
-            </div>
+            <StatCard key={item.label} item={item} index={i} />
           ))}
         </div>
       );
@@ -118,11 +137,13 @@ function Block({ block }: { block: StoryBlock }) {
       return (
         <div>
           {block.title && <h2 className="mb-8 text-3xl font-semibold md:text-4xl">{block.title}</h2>}
-          <ol className={`grid items-start gap-6 ${cols}`}>
+          <ol className={`grid items-stretch gap-6 ${cols}`}>
             {block.items.map((item) => (
-              <li key={item.title} className="rounded-card bg-surface p-5 shadow-note">
+              <li key={item.title} className="flex flex-col rounded-card bg-surface p-5 shadow-note">
                 {item.shot && <ShotFrame shot={item.shot} className="mb-5" />}
-                <span className="inline-block rounded-chip bg-accent px-3 py-1 text-xs font-bold tracking-wide uppercase">
+                {item.visual === "terminal" && <div className="mb-5"><TerminalSim /></div>}
+                {item.visual === "launcher" && <div className="mb-5"><LauncherSim /></div>}
+                <span className="w-fit rounded-chip bg-accent px-3 py-1 text-xs font-bold tracking-wide uppercase">
                   {item.label}
                 </span>
                 <h3 className="mt-3 text-xl font-semibold">{item.title}</h3>
