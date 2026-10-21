@@ -101,7 +101,13 @@ export function Solution({ block }: { block: SolutionBlock }) {
   return (
     <div className="space-y-10 md:space-y-14">
       <div className="grid gap-6 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-16">
-        <h2 className="text-3xl font-semibold md:text-4xl">{block.title}</h2>
+        <h2 className="text-3xl font-semibold md:text-4xl">
+          {block.title.split("\n").map((line) => (
+            <span key={line} className="block">
+              {line}
+            </span>
+          ))}
+        </h2>
         <div className="space-y-4 text-lg leading-relaxed text-ink-muted md:text-xl">
           {block.text.map((p) => (
             <p key={p.slice(0, 30)}>{p}</p>

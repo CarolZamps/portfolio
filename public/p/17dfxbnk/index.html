@@ -316,6 +316,64 @@ ul.ticks.tight{gap:10px}
 #sfx[aria-pressed="true"] .son{display:inline}
 #sfx[aria-pressed="true"] .soff{display:none}
 
+/* slide "o que a solução entrega": três cartões com visual (iguais aos do case) */
+.vcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch;margin-top:22px}
+.vcard{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;
+  box-shadow:0 8px 28px rgba(21,21,21,.07);min-width:0}
+.vvis{height:clamp(178px,28vh,215px);display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);
+  border-radius:14px;margin-bottom:16px;background:#fff}
+.vtag{align-self:flex-start;background:var(--lime);border-radius:999px;padding:4px 11px;font-size:.62rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase}
+.vcard h3{font-family:var(--display);font-weight:600;font-size:1.05rem;margin:12px 0 6px;letter-spacing:-.015em}
+.vcard p{margin:0;font-size:.84rem;line-height:1.5;color:var(--muted)}
+
+/* responsivo: o mesmo chat encolhe e estica */
+.vresp{width:100%;padding:12px 16px}
+.vresp-f{display:flex;flex-direction:column;gap:6px;padding:10px;border:1.5px solid var(--purple);border-radius:12px;background:#fff;
+  animation:vresize 7s ease-in-out infinite}
+@keyframes vresize{0%,12%{width:100%}45%,62%{width:56%}95%,100%{width:100%}}
+.vresp-h{display:flex;align-items:center;gap:6px}
+.vresp-h i{flex:none;width:18px;height:18px;border-radius:50%;background:var(--pink)}
+.vresp-h b{height:6px;flex:1;border-radius:3px;background:var(--line)}
+.vresp-m{max-width:90%;padding:5px 8px;border-radius:9px;font-size:.66rem;line-height:1.3}
+.vresp-m.in{align-self:flex-start;background:#f0f1f4}
+.vresp-m.out{align-self:flex-end;background:#e4fa9c}
+.vresp-i{height:18px;border:1.5px solid #ff9fcd;border-radius:6px}
+
+/* design system: tokens */
+.vtok{display:grid;gap:8px;width:100%;padding:12px 16px;margin:0;list-style:none}
+.vtok li{display:grid;grid-template-columns:3.2rem 4.8rem 1fr;align-items:center;gap:8px}
+.vtok .k{font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.vtok code{font-size:.68rem;color:var(--purple)}
+.vtok .sw{display:flex}
+.vtok .sw i{width:20px;height:20px;margin-right:-5px;border:2px solid #fff;border-radius:50%}
+.vtok .aa{font-family:var(--display);font-size:1.5rem;font-weight:600;line-height:1}
+.vtok .sp{display:flex;align-items:flex-end;gap:4px}
+.vtok .sp i{width:8px;border-radius:2px;background:var(--purple)}
+.vtok .rd{width:34px;height:22px;border:2px solid var(--ink);border-radius:10px 10px 10px 2px}
+
+/* fluidez: as perguntas mudam com a etapa */
+.vflow{position:relative;width:100%;height:100%;padding:16px}
+.vflow-s{display:flex;flex-wrap:wrap;gap:6px}
+.vflow-s span{padding:4px 10px;border-radius:999px;background:var(--line);font-size:.7rem;font-weight:600;color:var(--muted);
+  animation:vfc 7.2s infinite}
+.vflow-s span:nth-child(2){animation-delay:2.4s}
+.vflow-s span:nth-child(3){animation-delay:4.8s}
+@keyframes vfc{0%,33%{background:var(--pink);color:#fff}34%,100%{background:var(--line);color:var(--muted)}}
+.vflow-q{position:absolute;left:16px;right:16px;top:56px;display:flex;flex-direction:column;gap:6px;opacity:0;
+  animation:vfq 7.2s infinite}
+.vflow-q:nth-of-type(3){animation-delay:2.4s}
+.vflow-q:nth-of-type(4){animation-delay:4.8s}
+.vflow-q span{width:fit-content;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;
+  box-shadow:0 4px 14px rgba(21,21,21,.08);font-size:.74rem;font-weight:600}
+@keyframes vfq{0%{opacity:0;transform:translateY(8px)}6%,30%{opacity:1;transform:none}36%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){
+  .vresp-f,.vflow-s span,.vflow-q{animation:none!important}
+  .vresp-f{width:70%}
+  .vflow-s span:first-child{background:var(--pink);color:#fff}
+  .vflow-q:nth-of-type(2){opacity:1}}
+@media (max-width:760px){.vcards{grid-template-columns:minmax(0,1fr)}.vvis{height:190px}}
+
 /* painéis coloridos no lugar do fundo preto */
 .panel{border-radius:20px;padding:8px}
 .panel.blue{background:var(--mist)}
@@ -1121,7 +1179,7 @@ ul.ticks.tight{gap:10px}
       <div class="wrap split">
         <div>
           <p class="eyebrow">A solução</p>
-          <h2>Diana consultora, dentro do setup</h2>
+          <h2>Diana consultora,<br>dentro do setup</h2>
           <ul class="ticks tight">
             <li>O ícone de ajuda <strong>vira a Diana</strong> quando o parceiro passa o mouse</li>
             <li><strong>Quick questions por etapa:</strong> no financeiro ela sugere perguntas de financeiro, no cardápio sugere perguntas de cardápio</li>
@@ -1136,6 +1194,56 @@ ul.ticks.tight{gap:10px}
         </div>
       </div>
     </section>
+
+    <!-- 13b · O QUE A SOLUÇÃO ENTREGA -->
+    <section class="slide" data-t="O que entrega">
+      <div class="wrap">
+        <p class="eyebrow">O que a solução entrega</p>
+        <h2 class="wide">Responsiva, no padrão do produto e fluida de usar</h2>
+        <div class="vcards">
+          <div class="vcard">
+            <div class="vvis" role="img" aria-label="O mesmo chat se ajustando de uma tela larga para uma estreita">
+              <div class="vresp"><div class="vresp-f">
+                <div class="vresp-h"><i></i><b></b></div>
+                <span class="vresp-m in">Como cadastro minha conta?</span>
+                <span class="vresp-m out">Te explico aqui mesmo.</span>
+                <div class="vresp-i"></div>
+              </div></div>
+            </div>
+            <span class="vtag">Responsivo</span>
+            <h3>Do desktop ao celular</h3>
+            <p>O mesmo chat se ajusta à largura da tela, sem uma versão separada pra cada tamanho.</p>
+          </div>
+          <div class="vcard">
+            <div class="vvis" role="img" aria-label="Tokens do design system: cor, texto, espaço e raio">
+              <ul class="vtok">
+                <li><span class="k">cor</span><span class="sw"><i style="background:var(--pink)"></i><i style="background:var(--lime)"></i><i style="background:var(--ink)"></i></span><code>color.brand</code></li>
+                <li><span class="k">texto</span><span class="aa">Aa</span><code>font.display</code></li>
+                <li><span class="k">espaço</span><span class="sp"><i style="height:8px"></i><i style="height:14px"></i><i style="height:22px"></i></span><code>space.scale</code></li>
+                <li><span class="k">raio</span><span class="rd"></span><code>radius.card</code></li>
+              </ul>
+            </div>
+            <span class="vtag">Design system</span>
+            <h3>Tokens, não valores soltos</h3>
+            <p>Cor, texto, espaço e raio vêm do design system do produto, e o componente já nasce no padrão.</p>
+          </div>
+          <div class="vcard">
+            <div class="vvis" role="img" aria-label="Em cada etapa do setup, a Diana sugere as perguntas daquele assunto">
+              <div class="vflow">
+                <div class="vflow-s"><span>Financeiro</span><span>Cardápio</span><span>Horário</span></div>
+                <div class="vflow-q"><span>Como cadastro minha conta?</span><span>Quando recebo os repasses?</span></div>
+                <div class="vflow-q"><span>Como subo meus itens?</span><span>Posso importar uma planilha?</span></div>
+                <div class="vflow-q"><span>Como defino meus dias?</span><span>E feriados?</span></div>
+              </div>
+            </div>
+            <span class="vtag">Fluidez</span>
+            <h3>A pergunta certa, na etapa certa</h3>
+            <p>A Diana sugere o que o parceiro provavelmente quer saber agora e responde sem tirá-lo do fluxo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
 
     <!-- 14 · QUALIDADE -->
     <section class="slide" data-t="Qualidade">
@@ -1303,7 +1411,7 @@ ul.ticks.tight{gap:10px}
   <div class="bar">
     <span class="title" id="slideTitle">Capa</span>
     <div class="track"><div class="fill" id="fill"></div></div>
-    <span class="count" id="count">1 / 17</span>
+    <span class="count" id="count">1 / 18</span>
     <div class="nav">
       <button id="sfx" type="button" aria-pressed="false" aria-label="Ligar o som" title="Ligar o som"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor" stroke="none"/><g class="son"><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></g><path class="soff" d="m16 9.5 5 5m0-5-5 5"/></svg></button>
       <button id="prev" aria-label="Slide anterior">&#8592;</button>
