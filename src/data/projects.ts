@@ -67,7 +67,18 @@ export type Step = {
   visual?: "terminal" | "launcher";
 };
 
+/** Seção da solução: texto, palco largo com os vídeos e cartões de valor (ver Solution.tsx). */
+export type SolutionBlock = {
+  kind: "solution";
+  title: string;
+  text: string[];
+  desktop: { video: string; alt: string };
+  mobile: { video: string; alt: string };
+  cards: { visual: "responsive" | "system" | "flow"; label: string; title: string; text: string }[];
+};
+
 export type StoryBlock =
+  | SolutionBlock
   /** Texto corrido, com título, eyebrow e chips opcionais. */
   | {
       kind: "text";
@@ -314,25 +325,39 @@ export const projects: Project[] = [
         text: [
           "A solução começa no gesto: o ícone de dúvida vira a Diana quando o mouse se aproxima. É o convite, antes de qualquer conversa.",
         ],
-        shot: clip("icone", "O ícone de dúvida se transforma na Diana quando o mouse se aproxima", 720, 720, [600, 600, "var(--color-ink)", 0, 0, 600, 600]),
+        // palco largo e preto: o vídeo (fundo preto) se funde e a seção usa a largura toda
+        shot: clip("icone", "O ícone de dúvida se transforma na Diana quando o mouse se aproxima", 720, 720, [1200, 520, "#000", 340, 0, 520, 520]),
       },
       {
-        kind: "split",
-        flip: true,
+        kind: "solution",
         title: "Diana consultora, dentro do setup",
         text: [
           "O ícone de ajuda vira a Diana quando o parceiro passa o mouse.",
           "Quick questions por etapa: no financeiro ela sugere perguntas de financeiro, no cardápio sugere perguntas de cardápio.",
           "A mesma base do WhatsApp, agora com resposta síncrona e adaptada ao portal.",
         ],
-        shot: clip(
-          "diana-desktop",
-          "A Diana conversando com um parceiro dentro do portal, no desktop e no celular",
-          1040,
-          874,
-          [641, 520, "var(--color-note-3)", 112, 50, 500, 420.4],
-          { video: "diana-mobile", alt: "A mesma conversa no celular", x: 22, y: 150, w: 150, h: 308 },
-        ),
+        desktop: { video: "diana-desktop", alt: "A Diana conversando com um parceiro dentro do portal, no desktop" },
+        mobile: { video: "diana-mobile", alt: "A mesma conversa no celular" },
+        cards: [
+          {
+            visual: "responsive",
+            label: "Responsivo",
+            title: "Do desktop ao celular",
+            text: "O mesmo chat se ajusta à largura da tela, sem uma versão separada pra cada tamanho.",
+          },
+          {
+            visual: "system",
+            label: "Design system",
+            title: "Tokens, não valores soltos",
+            text: "Cor, texto, espaço e raio vêm do design system do produto, e o componente já nasce no padrão.",
+          },
+          {
+            visual: "flow",
+            label: "Fluidez",
+            title: "A pergunta certa, na etapa certa",
+            text: "A Diana sugere o que o parceiro provavelmente quer saber agora e responde sem tirá-lo do fluxo.",
+          },
+        ],
       },
       {
         kind: "text",
