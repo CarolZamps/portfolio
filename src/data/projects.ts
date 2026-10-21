@@ -54,6 +54,8 @@ export type Stat = {
   label: string;
   sub?: string;
   count?: { to: number; decimals?: number; prefix?: string; suffix?: string };
+  /** Cor do cartão; sem isso alterna lima e rosa. */
+  tone?: "lime" | "pink" | "blue";
 };
 
 export type Step = {
@@ -74,7 +76,7 @@ export type StoryBlock =
       text: string[];
       chips?: string[];
       /** Visual ao lado do texto (número em destaque ou tela/vídeo). */
-      aside?: { stat?: Stat; shot?: Shot; visual?: "whatsapp" };
+      aside?: { stat?: Stat; shot?: Shot; visual?: "whatsapp" | "hypothesis" | "abchart"; flip?: boolean };
     }
   /** Uma imagem larga, ou várias lado a lado. */
   | { kind: "media"; shots: Shot[]; caption?: string }
@@ -184,7 +186,7 @@ export const projects: Project[] = [
           "Todo parceiro novo do iFood passa por um portal de ativação. São seis etapas obrigatórias, cerca de 40 minutos de configuração, antes da loja ir ao ar.",
         ],
         chips: ["Pagamento · 1 min", "Entrega · 10 min", "Horário · 5 min", "Minha loja · 5 min", "Financeiro · 10 min", "Cardápio · 10 min", "Conclusão"],
-        aside: { stat: { value: "~40 min", label: "de configuração, em 6 etapas obrigatórias", sub: "antes da loja ir ao ar" } },
+        aside: { stat: { tone: "blue", value: "~40 min", label: "de configuração, em 6 etapas obrigatórias", sub: "antes da loja ir ao ar" } },
       },
       {
         kind: "text",
@@ -197,6 +199,7 @@ export const projects: Project[] = [
         ],
         aside: {
           stat: {
+            tone: "pink",
             count: { to: 17258 },
             label: "sessões web sem nenhuma ajuda em tempo real",
             sub: "entre janeiro e março de 2026",
@@ -221,6 +224,7 @@ export const projects: Project[] = [
           "Se a inteligência da Diana estivesse dentro do portal, o parceiro resolveria a dúvida sem sair do fluxo e chegaria ao primeiro pedido mais rápido e com mais qualidade.",
           "O obstáculo: pelo roadmap normal levaria meses para entrar na fila de desenvolvimento, e exigiria alinhar a prioridade de dois times. O portal e a Diana são times separados, com backlogs próprios.",
         ],
+        aside: { visual: "hypothesis", flip: true },
       },
       {
         kind: "text",
@@ -357,6 +361,7 @@ export const projects: Project[] = [
           "O que mudou foi a qualidade do setup, e isso apareceu na etapa seguinte: mais parceiros chegando à primeira venda.",
           "Portal → 1º pedido: +1,10 p.p. Portal → Ativado: 0,00 p.p. Foram 5.470 parceiros no controle e 5.522 na variante, medidos no painel oficial.",
         ],
+        aside: { visual: "abchart" },
       },
       {
         kind: "steps",

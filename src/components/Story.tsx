@@ -3,7 +3,8 @@ import { ArchitectureDiagram } from "./ArchitectureDiagram";
 import { CountUp } from "./CountUp";
 import { Reveal } from "./Reveal";
 import { ShotFrame } from "./ShotFrame";
-import { LauncherSim, TerminalSim, WhatsAppPhone } from "./Sims";
+import { ABChart } from "./ABChart";
+import { HypothesisSketch, LauncherSim, TerminalSim, WhatsAppPhone } from "./Sims";
 
 function Prose({
   eyebrow,
@@ -47,11 +48,16 @@ function Caption({ children }: { children: string }) {
   return <p className="mt-4 text-center font-hand text-2xl text-ink-muted">{children}</p>;
 }
 
+const TONES = {
+  lime: "-rotate-1 bg-accent",
+  pink: "rotate-1 bg-note-2",
+  blue: "-rotate-1 bg-note-5",
+} as const;
+
 function StatCard({ item, index = 0, className = "" }: { item: Stat; index?: number; className?: string }) {
+  const tone = TONES[item.tone ?? (index % 2 ? "pink" : "lime")];
   return (
-    <div
-      className={`flex flex-col justify-center rounded-card p-8 shadow-note ${index % 2 ? "rotate-1 bg-note-2" : "-rotate-1 bg-accent"} ${className}`}
-    >
+    <div className={`flex flex-col justify-center rounded-card p-8 shadow-note ${tone} ${className}`}>
       <p className="font-display text-5xl font-bold tracking-tight md:text-6xl">
         {item.count ? <CountUp {...item.count} /> : item.value}
       </p>
@@ -68,12 +74,16 @@ function Block({ block }: { block: StoryBlock }) {
         <Prose eyebrow={block.eyebrow} title={block.title} text={block.text} chips={block.chips} />
       );
       if (!block.aside) return <div className="max-w-3xl">{prose}</div>;
-      const { stat, shot, visual } = block.aside;
+      const { stat, shot, visual, flip } = block.aside;
       return (
         <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
-          {prose}
+          <div className={flip ? "md:order-2" : ""}>{prose}</div>
           {visual === "whatsapp" ? (
             <WhatsAppPhone />
+          ) : visual === "hypothesis" ? (
+            <HypothesisSketch />
+          ) : visual === "abchart" ? (
+            <ABChart />
           ) : shot ? (
             <ShotFrame shot={shot} className="shadow-note" />
           ) : (

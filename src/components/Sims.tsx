@@ -129,3 +129,30 @@ export function WhatsAppPhone() {
     </div>
   );
 }
+
+/** Esboço da hipótese: a Diana existia só no WhatsApp; e se ela estivesse dentro do portal? */
+export function HypothesisSketch() {
+  return (
+    <div className="sk" role="img" aria-label="Esboço: a conversa com a Diana no WhatsApp e, abaixo, o portal de setup com o ícone de ajuda. A pergunta: e se ela estivesse aqui?">
+      <div className="sk-card">
+        <span className="sk-t">WhatsApp</span>
+        <span className="sk-b in">Oi, aqui é a Diana</span>
+        <span className="sk-b out">preciso de ajuda…</span>
+      </div>
+      <div className="sk-arrow">
+        <svg viewBox="0 0 24 80" aria-hidden>
+          <path d="M12 2v68" strokeDasharray="6 6" />
+          <path d="M5 62l7 12 7-12" />
+        </svg>
+        <span>e se ela estivesse aqui?</span>
+      </div>
+      <div className="sk-card portal">
+        <span className="sk-t">Portal · setup</span>
+        <i className="sk-bar w1" />
+        <i className="sk-bar w2" />
+        <i className="sk-bar w1" />
+        <span className="sk-dot">?</span>
+      </div>
+    </div>
+  );
+}

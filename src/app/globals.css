@@ -1011,3 +1011,95 @@
   line-height: 1;
   color: #fff;
 }
+
+/* esboço da hipótese (HypothesisSketch) */
+.sk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  max-width: 340px;
+  margin-inline: auto;
+}
+.sk-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-note);
+}
+.sk-card.portal {
+  border-color: var(--color-select);
+}
+.sk-t {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+.sk-b {
+  max-width: 88%;
+  padding: 7px 12px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+}
+.sk-b.in {
+  align-self: flex-start;
+  border-top-left-radius: 4px;
+  background: #f0f1f4;
+}
+.sk-b.out {
+  align-self: flex-end;
+  border-top-right-radius: 4px;
+  background: #dcf8c6;
+}
+.sk-bar {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: #e9eaee;
+}
+.sk-bar.w1 {
+  width: 82%;
+}
+.sk-bar.w2 {
+  width: 58%;
+}
+.sk-dot {
+  display: grid;
+  align-self: flex-end;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-ink);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0 0 6px rgb(255 62 154 / 0.22);
+}
+.sk-arrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 92px;
+}
+.sk-arrow svg {
+  width: 24px;
+  height: 80px;
+  fill: none;
+  stroke: var(--color-cta);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sk-arrow span {
+  font-family: var(--font-hand);
+  font-size: 1.5rem;
+  color: var(--color-ink);
+}
