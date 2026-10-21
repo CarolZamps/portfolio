@@ -2,6 +2,11 @@ export const site = {
   name: "Carolina Zamprônio",
   url: "https://carolinazampronio.com",
   linkedin: "https://www.linkedin.com/in/carolinazampronio/",
+  /**
+   * Deck do case "Diana no Portal": link não listado (noindex, fora de menus e sitemap).
+   * Os arquivos ficam em public/p/<slug>/. Trocar o slug exige renomear a pasta.
+   */
+  deckPath: "/p/17dfxbnk",
 };
 
 /**

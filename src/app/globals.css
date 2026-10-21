@@ -20,6 +20,7 @@
   --color-cta: #ff3e9a;
   --color-cta-hover: #e02a83;
   --color-on-cta: #ffffff;
+  --color-select: #703ffe;
 
   /* Notas / stickers */
   --color-note-1: #c6f432;
@@ -109,7 +110,13 @@
 }
 
 @layer base {
+  /* notas de hover dos stickers (invisíveis) não geram scroll lateral */
+  html {
+    overflow-x: clip;
+  }
+
   body {
+    overflow-x: clip;
     background-color: var(--color-paper);
     background-image: var(--bg-image);
     background-size: var(--bg-size);
@@ -126,4 +133,881 @@
     font-family: var(--font-display);
     letter-spacing: var(--display-tracking);
   }
+}
+
+/* ── Diagrama da arquitetura (case Diana no Portal) ──
+   Estados "on" vêm do React (ArchitectureDiagram). Cores = tokens do tema. */
+.arch-flow {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.arch-flow .zt {
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  fill: var(--color-ink-muted);
+}
+.arch-flow .nl {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  fill: var(--color-ink);
+  text-anchor: middle;
+}
+.arch-flow .nl.mono {
+  font-size: 11.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.arch-flow .nl.small {
+  font-size: 10.5px;
+}
+.arch-flow .nl.on-dark {
+  font-size: 10.5px;
+  fill: var(--color-on-cta);
+}
+.arch-flow .sm {
+  font-family: var(--font-sans);
+  font-size: 9.5px;
+  fill: var(--color-ink-muted);
+  text-anchor: middle;
+}
+.arch-flow .sm.start {
+  text-anchor: start;
+}
+.arch-flow .sm.strong {
+  font-weight: 600;
+  fill: var(--color-ink);
+}
+.arch-flow .frame {
+  fill: var(--color-surface);
+  stroke: var(--color-line);
+}
+.arch-flow .frame.dashed {
+  fill: none;
+  stroke-dasharray: 4 4;
+}
+.arch-flow .gate {
+  stroke: var(--color-accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.arch-flow .user {
+  fill: var(--color-cta);
+}
+.arch-flow .bot {
+  fill: var(--color-paper);
+  stroke: var(--color-line);
+}
+.arch-flow .spec {
+  fill: var(--color-paper);
+  stroke: var(--color-line);
+}
+.arch-flow .badge {
+  fill: var(--color-accent);
+}
+.arch-flow .ah {
+  fill: var(--color-cta);
+}
+.arch-flow .nd {
+  opacity: 0.28;
+  transition: opacity 0.4s ease;
+}
+.arch-flow .nd.on {
+  opacity: 1;
+}
+.arch-flow .nd rect {
+  fill: var(--color-surface);
+  stroke: var(--color-ink);
+  stroke-width: 1.5;
+}
+.arch-flow .nd.key rect {
+  stroke: var(--color-cta);
+  stroke-width: 2;
+}
+.arch-flow .ln {
+  fill: none;
+  stroke: var(--color-cta);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.arch-flow .ln.on {
+  stroke-dashoffset: 0;
+  marker-end: url(#arch-ah);
+}
+.arch-flow .gh {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-ink-muted) 55%, transparent);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.arch-flow .gh.on {
+  opacity: 1;
+}
+.arch-flow .lb,
+.arch-flow .grp {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.arch-flow .lb.on,
+.arch-flow .grp.on {
+  opacity: 1;
+}
+.arch-flow .bub {
+  opacity: 0;
+  transform: translateY(6px);
+  transform-box: fill-box;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+.arch-flow .bub.on {
+  opacity: 1;
+  transform: none;
+}
+.arch-flow .leg-portal {
+  stroke: var(--color-cta);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+.arch-flow .leg-wa {
+  stroke: color-mix(in srgb, var(--color-ink-muted) 55%, transparent);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+@media (prefers-reduced-motion: reduce) {
+  .arch-flow * {
+    transition: none !important;
+  }
+}
+
+/* ── Abertura do case (CaseIntro): frame de Figma, cursor e título digitado ──
+   Estado padrão = final (sem JS / reduzir movimento). A sequência é guiada por .anim e c1..c9. */
+.fi {
+  position: relative;
+}
+.fi-frame {
+  position: absolute;
+  top: -26px;
+  left: -26px;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  border: 1.5px solid var(--color-select);
+  border-radius: 3px;
+  pointer-events: none;
+  transition:
+    opacity 0.18s ease,
+    width 0.62s cubic-bezier(0.33, 0.85, 0.4, 1),
+    height 0.62s cubic-bezier(0.33, 0.85, 0.4, 1);
+}
+.fi.c1 .fi-frame {
+  opacity: 1;
+}
+.fi.c2 .fi-frame {
+  width: calc(100% + 52px);
+  height: calc(100% + 52px);
+}
+.fi-name {
+  position: absolute;
+  top: -19px;
+  left: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-select);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.fi.c3 .fi-name {
+  opacity: 1;
+}
+.fi-hd {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: #fff;
+  border: 1.5px solid var(--color-select);
+  border-radius: 1px;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.fi.c3 .fi-hd {
+  opacity: 1;
+}
+.fi-hd.tl {
+  top: -4px;
+  left: -4px;
+}
+.fi-hd.tr {
+  top: -4px;
+  right: -4px;
+}
+.fi-hd.bl {
+  bottom: -4px;
+  left: -4px;
+}
+.fi-hd.br {
+  bottom: -4px;
+  right: -4px;
+}
+.fi-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 6;
+  display: flex;
+  align-items: flex-start;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    transform 0.62s cubic-bezier(0.33, 0.85, 0.4, 1);
+}
+.fi.c1 .fi-cursor {
+  opacity: 1;
+}
+.fi.c9 .fi-cursor {
+  opacity: 0;
+}
+.fi-pill {
+  margin: 13px 0 0 -3px;
+  padding: 3px 9px 4px;
+  border-radius: 999px;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgb(21 21 21 / 0.2);
+}
+.fi-hl {
+  background-image: linear-gradient(rgb(255 62 154 / 0.45), rgb(255 62 154 / 0.45));
+  background-repeat: no-repeat;
+  background-position: 0 88%;
+  background-size: 100% 38%;
+  padding: 0 0.05em;
+  transition: background-size 0.68s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* só esconde o conteúdo quando a animação vai mesmo rodar */
+.fi.anim .fi-hl {
+  background-size: 0% 38%;
+}
+.fi.anim.c5 .fi-hl {
+  background-size: 100% 38%;
+}
+.fi.anim .fi-meta,
+.fi.anim .fi-sum {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.fi.anim.c6 .fi-sum,
+.fi.anim.c8 .fi-meta {
+  opacity: 1;
+  transform: none;
+}
+.fi.anim .fi-title {
+  opacity: 0;
+}
+.fi.anim.c4 .fi-title {
+  opacity: 1;
+}
+.fi.anim .fi-tw {
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  white-space: pre;
+  vertical-align: bottom;
+  border-right: 3px solid transparent;
+}
+.fi.anim.c4 .fi-tw:first-child {
+  animation:
+    fi-typew 0.5s steps(var(--n)) forwards,
+    fi-car-a 0.5s steps(1);
+}
+.fi.anim.c4 .fi-tw:last-child {
+  animation:
+    fi-typew 0.8s steps(var(--n)) 0.5s forwards,
+    fi-car-b 1.3s steps(1);
+}
+@keyframes fi-typew {
+  to {
+    width: var(--w);
+  }
+}
+@keyframes fi-car-a {
+  0%,
+  99% {
+    border-right-color: var(--color-ink);
+  }
+}
+@keyframes fi-car-b {
+  0%,
+  38% {
+    border-right-color: transparent;
+  }
+  39%,
+  99% {
+    border-right-color: var(--color-ink);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fi * {
+    transition: none !important;
+    animation: none !important;
+  }
+  .fi-cursor {
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .fi-cursor,
+  .fi-frame {
+    display: none;
+  }
+}
+
+/* ── Simulações do case (Sims.tsx): terminal, launcher e WhatsApp ── */
+.sim {
+  container-type: inline-size;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+}
+.sim-win {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  height: 86%;
+  overflow: hidden;
+  border-radius: 2.6cqw;
+  box-shadow: 0 2cqw 5cqw rgb(21 21 21 / 0.25);
+}
+.sim-dark {
+  background: var(--color-ink);
+}
+.sim-light {
+  background: var(--color-surface);
+}
+.sim-bar {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 1.4cqw;
+  padding: 2cqw 2.6cqw;
+  background: rgb(127 127 140 / 0.12);
+}
+.sim-bar i {
+  width: 1.8cqw;
+  height: 1.8cqw;
+  border-radius: 50%;
+  background: rgb(127 127 140 / 0.45);
+}
+.sim-bar span {
+  margin-left: 1.6cqw;
+  font-size: 2.5cqw;
+  font-weight: 600;
+  color: var(--color-ink-muted);
+}
+.sim-dark .sim-bar span {
+  color: rgb(255 255 255 / 0.55);
+}
+.sim-term {
+  flex: 1;
+  min-height: 0;
+  padding: 3cqw 3.4cqw;
+  overflow: hidden;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 2.7cqw;
+  line-height: 1.9;
+  color: #d6d6e0;
+}
+.sim-term p {
+  margin: 0;
+}
+.sim-prompt {
+  margin-right: 1.4cqw;
+  color: var(--color-accent);
+}
+.sim-ttype {
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: nowrap;
+  border-right: 2px solid var(--color-accent);
+  animation: sim-write 8s infinite both;
+}
+@keyframes sim-write {
+  0% {
+    width: 0;
+    animation-timing-function: steps(41, end);
+  }
+  17%,
+  100% {
+    width: 41ch;
+  }
+}
+.sim-tln {
+  display: flex;
+  align-items: baseline;
+  gap: 1.6cqw;
+}
+.sim-tln em {
+  min-width: 9cqw;
+  font-style: normal;
+  color: #8fb5ff;
+}
+.sim-tln s {
+  margin-left: auto;
+  text-decoration: none;
+  color: #6d6d7b;
+}
+.sim-tln .ok {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+.sim-seq {
+  animation: sim-seq 8s infinite both;
+}
+@keyframes sim-seq {
+  0% {
+    opacity: 0;
+    transform: translateY(7px);
+  }
+  7%,
+  84% {
+    opacity: 1;
+    transform: none;
+  }
+  95%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.sim-ubody {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 8cqw;
+  min-height: 0;
+  padding: 2cqw 3cqw;
+}
+.sim-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3.4cqw;
+}
+.sim-lnch {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 25cqw;
+  height: 25cqw;
+  border-radius: 50%;
+  background: var(--color-ink);
+  color: #fff;
+  font-size: 8cqw;
+  font-weight: 700;
+  animation: sim-lnch 6s infinite both;
+}
+.sim-lnch::before {
+  content: "";
+  position: absolute;
+  inset: -2.4cqw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 62 154 / 0.5), transparent 68%);
+  opacity: 0;
+  animation: sim-glow 6s infinite both;
+}
+@keyframes sim-lnch {
+  0%,
+  26% {
+    transform: scale(1);
+  }
+  38%,
+  60% {
+    transform: scale(1.07);
+  }
+  72%,
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes sim-glow {
+  0%,
+  24% {
+    opacity: 0;
+  }
+  38%,
+  60% {
+    opacity: 1;
+  }
+  74%,
+  100% {
+    opacity: 0;
+  }
+}
+.sim-lav {
+  position: absolute;
+  inset: 1.2cqw;
+  z-index: 3;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--color-note-2), var(--color-cta));
+  opacity: 0;
+  animation: sim-lav 6s infinite both;
+}
+@keyframes sim-lav {
+  0%,
+  32% {
+    opacity: 0;
+  }
+  42%,
+  60% {
+    opacity: 1;
+  }
+  70%,
+  100% {
+    opacity: 0;
+  }
+}
+.sim-q {
+  position: relative;
+  z-index: 2;
+  animation: sim-qfade 6s infinite both;
+}
+@keyframes sim-qfade {
+  0%,
+  32% {
+    opacity: 1;
+  }
+  42%,
+  60% {
+    opacity: 0;
+  }
+  70%,
+  100% {
+    opacity: 1;
+  }
+}
+.sim-state {
+  position: relative;
+  width: 100%;
+  height: 1.3em;
+  margin: 0;
+  font-size: 2.7cqw;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-ink-muted);
+}
+.sim-state span {
+  position: absolute;
+  left: 50%;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-50%);
+}
+.sim-state span:nth-child(1) {
+  animation: sim-us1 6s infinite both;
+}
+.sim-state span:nth-child(2) {
+  animation: sim-us2 6s infinite both;
+}
+.sim-state span:nth-child(3) {
+  animation: sim-us3 6s infinite both;
+}
+@keyframes sim-us1 {
+  0%,
+  24% {
+    opacity: 1;
+  }
+  30%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes sim-us2 {
+  0%,
+  28% {
+    opacity: 0;
+  }
+  34%,
+  56% {
+    opacity: 1;
+  }
+  62%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes sim-us3 {
+  0%,
+  60% {
+    opacity: 0;
+  }
+  66%,
+  92% {
+    opacity: 1;
+  }
+  98%,
+  100% {
+    opacity: 0;
+  }
+}
+.sim-props {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2cqw;
+  width: 34cqw;
+}
+.sim-props div {
+  display: flex;
+  justify-content: space-between;
+  gap: 2cqw;
+  padding: 2.4cqw 3cqw;
+  border: 1px solid var(--color-line);
+  border-radius: 2cqw;
+  font-size: 2.6cqw;
+}
+.sim-props b {
+  font-variant-numeric: tabular-nums;
+}
+.sim-props div:nth-child(1) {
+  animation: sim-ph1 6s infinite both;
+}
+.sim-props div:nth-child(2) {
+  animation: sim-ph2 6s infinite both;
+}
+.sim-props div:nth-child(3) {
+  animation: sim-ph3 6s infinite both;
+}
+@keyframes sim-ph1 {
+  0%,
+  16% {
+    border-color: var(--color-select);
+    background: color-mix(in srgb, var(--color-select) 8%, white);
+  }
+  24%,
+  100% {
+    border-color: var(--color-line);
+    background: #fff;
+  }
+}
+@keyframes sim-ph2 {
+  0%,
+  26% {
+    border-color: var(--color-line);
+    background: #fff;
+  }
+  34%,
+  50% {
+    border-color: var(--color-select);
+    background: color-mix(in srgb, var(--color-select) 8%, white);
+  }
+  58%,
+  100% {
+    border-color: var(--color-line);
+    background: #fff;
+  }
+}
+@keyframes sim-ph3 {
+  0%,
+  60% {
+    border-color: var(--color-line);
+    background: #fff;
+  }
+  68%,
+  86% {
+    border-color: var(--color-select);
+    background: color-mix(in srgb, var(--color-select) 8%, white);
+  }
+  94%,
+  100% {
+    border-color: var(--color-line);
+    background: #fff;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sim-ttype,
+  .sim-seq,
+  .sim-lnch,
+  .sim-lnch::before,
+  .sim-lav,
+  .sim-q,
+  .sim-state span,
+  .sim-props div {
+    animation: none !important;
+  }
+  .sim-ttype {
+    width: 41ch;
+  }
+  .sim-state span:nth-child(2) {
+    opacity: 1;
+  }
+}
+
+/* celular com a conversa da Diana no WhatsApp */
+.wa {
+  --s: 13px;
+  display: flex;
+  flex-direction: column;
+  width: calc(var(--s) * 22);
+  max-width: 100%;
+  aspect-ratio: 22 / 45;
+  margin-inline: auto;
+  overflow: hidden;
+  background: #e9e1d8;
+  border: 0.46em solid #fff;
+  border-radius: 2.9em;
+  box-shadow:
+    0 1.5em 3.4em rgb(21 21 21 / 0.2),
+    0 0 0 1px rgb(21 21 21 / 0.07);
+  font-size: var(--s);
+}
+@media (min-width: 768px) {
+  .wa {
+    --s: 14px;
+  }
+}
+.wa-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.65em;
+  padding: 0.9em 0.95em;
+  background: #f7f7f8;
+  border-bottom: 1px solid rgb(21 21 21 / 0.08);
+}
+.wa-back {
+  flex: none;
+  font-size: 1.35em;
+  line-height: 0.8;
+  color: #2e6fe0;
+}
+.wa-head img {
+  display: block;
+  flex: none;
+  width: 2.7em;
+  height: 2.7em;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.wa-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.18;
+}
+.wa-name b {
+  display: flex;
+  align-items: center;
+  gap: 0.32em;
+  font-size: 1.02em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.wa-name > span {
+  font-size: 0.8em;
+  color: #8d8d94;
+}
+.wa-vfy {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  font-size: 0.62em;
+  font-style: normal;
+  font-weight: 700;
+}
+.wa-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.62em;
+  min-height: 0;
+  padding: 1.1em 0.85em;
+  background-color: #e9e1d8;
+  background-image: radial-gradient(rgb(21 21 21 / 0.045) 1px, transparent 1px);
+  background-size: 1.7em 1.7em;
+}
+.wa-msg {
+  max-width: 87%;
+  padding: 0.62em 0.8em 0.45em;
+  border-radius: 0.95em;
+  font-size: 0.95em;
+  line-height: 1.4;
+  box-shadow: 0 1px 1.5px rgb(21 21 21 / 0.09);
+}
+.wa-msg i {
+  display: block;
+  margin-top: 0.3em;
+  font-size: 0.7em;
+  font-style: normal;
+  text-align: right;
+  color: #9b9ba2;
+}
+.wa-msg.in {
+  align-self: flex-start;
+  background: #fff;
+  border-top-left-radius: 0.24em;
+}
+.wa-msg.out {
+  align-self: flex-end;
+  background: #dcf8c6;
+  border-top-right-radius: 0.24em;
+}
+.wa-msg.out i {
+  color: #77935f;
+}
+.wa-foot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 0.85em;
+  background: #f7f7f8;
+  border-top: 1px solid rgb(21 21 21 / 0.08);
+}
+.wa-foot span {
+  flex: 1;
+  padding: 0.52em 0.9em;
+  border: 1px solid rgb(21 21 21 / 0.08);
+  border-radius: 1.3em;
+  background: #fff;
+  font-size: 0.86em;
+  color: #aaaab1;
+}
+.wa-foot em {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  background: #25d366;
+  font-size: 0.92em;
+  font-style: normal;
+  line-height: 1;
+  color: #fff;
 }

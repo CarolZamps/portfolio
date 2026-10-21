@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { CaseIntro } from "@/components/CaseIntro";
+import { EmojiSticker } from "@/components/EmojiSticker";
 import { ShotFrame } from "@/components/ShotFrame";
 import { StickerBoard } from "@/components/StickerBoard";
 import { Story } from "@/components/Story";
 import { getProject, projects } from "@/data/projects";
-import { shareMetadata } from "@/data/site";
+import { shareMetadata, site } from "@/data/site";
 
 // Cases "em breve" não têm página
 export function generateStaticParams() {
@@ -49,25 +51,50 @@ export default async function ProjectPage({ params }: PageProps<"/projetos/[slug
         </svg>
       </Link>
 
-      <header className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
-        <div className="max-w-3xl">
-          <p className="text-sm font-semibold text-ink-muted">
-            {project.company} · {project.year} · {project.scope}
-          </p>
-          <h1 className="mt-2 text-5xl font-semibold md:text-6xl">{project.title}</h1>
-          <p className="mt-4 text-xl text-ink-muted">{project.summary}</p>
-        </div>
+      <header className={`${project.deck ? "mt-14" : "mt-8"} flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-12`}>
+        {project.deck ? (
+          <CaseIntro
+            meta={`${project.company} · ${project.year} · ${project.scope}`}
+            first={`${project.title.split(" ")[0]} `}
+            second={project.title.split(" ").slice(1).join(" ")}
+            summary={project.summary}
+          />
+        ) : (
+          <div className="max-w-3xl">
+            <p className="text-sm font-semibold text-ink-muted">
+              {project.company} · {project.year} · {project.scope}
+            </p>
+            <h1 className="mt-2 text-5xl font-semibold md:text-6xl">{project.title}</h1>
+            <p className="mt-4 text-xl text-ink-muted">{project.summary}</p>
+          </div>
+        )}
 
         {project.tools.length > 0 && <StickerBoard tools={project.tools} />}
       </header>
 
-      {project.cover && (
-        <ShotFrame shot={project.cover} priority className="mt-12 shadow-note" />
+      {(project.hero ?? project.cover) && (
+        <ShotFrame shot={(project.hero ?? project.cover)!} priority className="mt-12 shadow-note" />
       )}
 
       <div className="mt-20 md:mt-28">
         <Story blocks={project.story} />
       </div>
+
+      {/* Atalho escondido pro deck completo: discreto, sem texto visível até o hover/foco */}
+      {project.deck && (
+        <div className="mt-24 flex items-center justify-end gap-2">
+          <span aria-hidden className="font-hand text-2xl text-ink-muted">
+            psiu, tem mais
+          </span>
+          <EmojiSticker
+            emoji="🤫"
+            rotate={8}
+            className="text-4xl opacity-90 transition-opacity hover:opacity-100"
+            hint="psiu, tem uma versão em slides"
+            href={site.deckPath}
+          />
+        </div>
+      )}
     </article>
   );
 }

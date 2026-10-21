@@ -10,6 +10,7 @@ export function EmojiSticker({
   rotate = -6,
   className = "",
   hint,
+  href,
 }: {
   emoji: string;
   /** Ordem de colagem quando há vários juntos. */
@@ -18,6 +19,8 @@ export function EmojiSticker({
   className?: string;
   /** Easter egg: recado em letra de mão que aparece no hover/foco. */
   hint?: string;
+  /** Com `hint`: o sticker vira um link (abre em nova aba, sem ser seguido por buscadores). */
+  href?: string;
 }) {
   const reduce = useReducedMotion();
   const enter = stickerIn(rotate, index, 0.3, reduce);
@@ -38,6 +41,30 @@ export function EmojiSticker({
   if (!hint) return sticker;
 
   // O filtro die-cut fica só no emoji; a dica é irmã dele, pra não ganhar borda.
+  const tip = (
+    <span
+      aria-hidden
+      className="pointer-events-none absolute right-0 bottom-full z-20 mb-1 translate-y-1 font-hand text-xl font-bold whitespace-nowrap text-ink-muted opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+    >
+      {hint} ↴
+    </span>
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        aria-label={hint}
+        className="group relative inline-flex outline-none"
+      >
+        {sticker}
+        {tip}
+      </a>
+    );
+  }
+
   return (
     <span
       tabIndex={0}
@@ -45,12 +72,7 @@ export function EmojiSticker({
       className="group relative inline-flex cursor-default outline-none"
     >
       {sticker}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute right-0 bottom-full z-20 mb-1 translate-y-1 font-hand text-xl font-bold whitespace-nowrap text-ink-muted opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
-      >
-        {hint} ↴
-      </span>
+      {tip}
     </span>
   );
 }

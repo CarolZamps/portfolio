@@ -36,22 +36,58 @@ export type Frame = {
 };
 
 export type Shot = {
+  /** Imagem (ou o poster, quando é vídeo). */
   src: string;
   alt: string;
   width: number;
   height: number;
   frame: Frame;
+  /** Nome-base do vídeo em /projetos/diana (gera .webm e .mp4, poster = `src`). */
+  video?: string;
+  /** Segundo vídeo por cima (ex.: o celular sobre o desktop). Medidas em px na base do frame. */
+  overlay?: { video: string; alt: string; x: number; y: number; w: number; h: number };
+};
+
+export type Stat = {
+  /** Texto fixo. Se houver `count`, o número é animado e `value` é ignorado. */
+  value?: string;
+  label: string;
+  sub?: string;
+  count?: { to: number; decimals?: number; prefix?: string; suffix?: string };
+};
+
+export type Step = {
+  label: string;
+  title: string;
+  text: string;
+  shot?: Shot;
+  /** Simulação em CSS no lugar de imagem/vídeo (ver Sims.tsx). */
+  visual?: "terminal" | "launcher";
 };
 
 export type StoryBlock =
-  /** Texto corrido, com título opcional. */
-  | { kind: "text"; title?: string; text: string[] }
+  /** Texto corrido, com título, eyebrow e chips opcionais. */
+  | {
+      kind: "text";
+      eyebrow?: string;
+      title?: string;
+      text: string[];
+      chips?: string[];
+      /** Visual ao lado do texto (número em destaque ou tela/vídeo). */
+      aside?: { stat?: Stat; shot?: Shot; visual?: "whatsapp" };
+    }
   /** Uma imagem larga, ou várias lado a lado. */
   | { kind: "media"; shots: Shot[]; caption?: string }
   /** Texto de um lado, tela do outro. */
   | { kind: "split"; title?: string; text: string[]; shot: Shot; flip?: boolean }
-  /** Números em destaque. */
-  | { kind: "stats"; items: { value: string; label: string }[] }
+  /** Números em destaque (com contagem animada, se pedir). */
+  | { kind: "stats"; items: Stat[] }
+  /** Cartões em sequência (passos do processo, papéis, aprendizados). */
+  | { kind: "steps"; title?: string; items: Step[]; caption?: string }
+  /** Diagrama animado da arquitetura (nomes ilustrativos). */
+  | { kind: "diagram"; title?: string; text: string[]; caption?: string }
+  /** Aviso em destaque, estilo post-it. */
+  | { kind: "note"; label?: string; text: string }
   /** Frase de impacto, escrita "à mão". */
   | { kind: "quote"; text: string };
 
@@ -66,7 +102,12 @@ export type Project = {
   color: NoteColor;
   /** "soon" = card desabilitado, em construção, sem página de case. */
   status?: "soon";
+  /** Capa do card na home (imagem). */
   cover?: Shot;
+  /** Capa no topo da página do case, se for diferente da do card (ex.: vídeo). */
+  hero?: Shot;
+  /** Mostra o atalho escondido pro deck (site.deckPath) no fim do case. */
+  deck?: boolean;
   story: StoryBlock[];
   tools: Tool[];
 };
@@ -95,6 +136,20 @@ const maze: Tool = {
   color: "teal",
 };
 
+/** Vídeo em /projetos/diana: o poster vira o `src`; `frame` segue a mesma receita dos prints. */
+const clip = (
+  video: string,
+  alt: string,
+  width: number,
+  height: number,
+  frame: [number, number, string, number, number, number, number],
+  overlay?: NonNullable<Shot["overlay"]>,
+): Shot => ({
+  ...shot(`/projetos/diana/${video}-poster.jpg`, alt, width, height, frame),
+  video,
+  overlay,
+});
+
 const shot = (
   src: string,
   alt: string,
@@ -105,17 +160,236 @@ const shot = (
 
 export const projects: Project[] = [
   {
-    slug: "ifood",
-    title: "Ativação de parceiros",
+    slug: "diana-no-portal",
+    title: "Diana no Portal",
     company: "iFood",
     year: "2026",
     scope: "Product Design",
-    summary: "Da jornada de cadastro ao primeiro pedido de novos parceiros.",
-    highlight: "case em construção",
-    color: "yellow",
-    status: "soon",
-    story: [],
-    tools: [],
+    summary: "Um agente de WhatsApp que passou a ajudar parceiros dentro do portal de cadastro.",
+    highlight: "feito inteiro com vibe coding, por designers",
+    color: "pink",
+    deck: true,
+    // capa do card: frame do portal, sangrando pela direita e por baixo
+    cover: shot("/projetos/diana/portal-poster.jpg", "Portal de ativação de parceiros do iFood, com as seis etapas de configuração", 1300, 794, [641, 440, "var(--color-cta)", 48, 56, 700, 427.6]),
+    // topo do case: o mesmo portal, em vídeo
+    hero: clip("portal", "Gravação do portal de ativação: o parceiro avança pelas seis etapas", 1300, 794, [641, 420, "var(--color-accent)", 56, 52, 700, 427.6]),
+    story: [
+      {
+        kind: "text",
+        eyebrow: "O contexto",
+        title: "Ninguém vende antes de terminar o setup",
+        text: [
+          "Todo parceiro novo do iFood passa por um portal de ativação. São seis etapas obrigatórias, cerca de 40 minutos de configuração, antes da loja ir ao ar.",
+        ],
+        chips: ["Pagamento · 1 min", "Entrega · 10 min", "Horário · 5 min", "Minha loja · 5 min", "Financeiro · 10 min", "Cardápio · 10 min", "Conclusão"],
+        aside: { stat: { value: "~40 min", label: "de configuração, em 6 etapas obrigatórias", sub: "antes da loja ir ao ar" } },
+      },
+      {
+        kind: "text",
+        eyebrow: "O problema",
+        title: "E, quando travava, ele travava sozinho",
+        text: [
+          "Entrevistas e forms recorrentes no produto apontavam falta de suporte durante a ativação: a mesma dor, pesquisa após pesquisa.",
+          "O portal oferecia um FAQ estático, no rodapé da tela, sem nenhum canal para tirar dúvida no momento em que ela aparece.",
+          "A leitura: o parceiro não desistia por falta de vontade. Ele parava numa dúvida que ninguém estava lá para responder.",
+        ],
+        aside: {
+          stat: {
+            count: { to: 17258 },
+            label: "sessões web sem nenhuma ajuda em tempo real",
+            sub: "entre janeiro e março de 2026",
+          },
+        },
+      },
+      {
+        kind: "text",
+        eyebrow: "A oportunidade",
+        title: "A ajuda já existia. Só não estava onde a dúvida acontecia.",
+        text: [
+          "A Diana é o agente de onboarding do iFood. Ela já funcionava como canal autônomo de captação e cadastro, e também respondia dúvidas sobre a plataforma.",
+          "Tudo isso acontecia só pelo WhatsApp, fora do fluxo de quem estava configurando a loja. Quem estava no portal, no meio do setup, não alcançava nada disso.",
+        ],
+        aside: { visual: "whatsapp" },
+      },
+      {
+        kind: "text",
+        eyebrow: "A hipótese",
+        title: "E se a Diana morasse dentro do portal?",
+        text: [
+          "Se a inteligência da Diana estivesse dentro do portal, o parceiro resolveria a dúvida sem sair do fluxo e chegaria ao primeiro pedido mais rápido e com mais qualidade.",
+          "O obstáculo: pelo roadmap normal levaria meses para entrar na fila de desenvolvimento, e exigiria alinhar a prioridade de dois times. O portal e a Diana são times separados, com backlogs próprios.",
+        ],
+      },
+      {
+        kind: "text",
+        eyebrow: "A aposta do time",
+        title: "Total Football",
+        text: [
+          "Na Vibe Coding Week, o time testou uma ideia: com IA, o mesmo profissional atua em mais de uma área sem perder a profundidade da sua especialidade. Designer entra em código, engenharia entra em design.",
+          "Para mim não era experimento novo. Eu já vinha subindo código no produto, adequando componentes ao design system e ajustando conteúdo direto na interface. A semana só abriu espaço para ir mais longe.",
+        ],
+        aside: {
+          shot: clip("campo", "Campo de futebol: profissionais do time de um lado, desafios do outro", 1400, 800, [641, 366, "var(--color-accent)", 0, 0, 641, 366]),
+        },
+      },
+      {
+        kind: "diagram",
+        title: "Antes de construir, entender a arquitetura com quem a construiu",
+        text: [
+          "O webchat do portal reaproveita o mesmo endpoint da Diana. Um roteador decide pelo canal: no webchat, a resposta é síncrona e pula os agentes especializados, indo direto para a revisão.",
+          "A mudança no core foi de cerca de 15 linhas, retrocompatível e testada. A rota pelo gateway foi feita pela engenharia.",
+        ],
+        caption: "diagrama simplificado, com nomes ilustrativos",
+      },
+      {
+        kind: "steps",
+        title: "Meu processo",
+        items: [
+          {
+            label: "01 · Figma",
+            title: "Esboço no Figma",
+            text: "Estados, hierarquia e comportamento definidos antes de qualquer linha de código. É aqui que eu decido o que o componente precisa fazer.",
+            shot: clip("figma", "Gravação do esboço do webchat no Figma", 1300, 846, [300, 200, "var(--color-note-5)", 18, 22, 340, 221]),
+          },
+          {
+            label: "02 · Claude Code",
+            title: "Tradução no Claude Code",
+            text: "O esboço vira contexto. O componente nasce dentro dos padrões do repositório, lendo a documentação que o próprio time escreveu.",
+            visual: "terminal",
+          },
+          {
+            label: "03 · Microinterações",
+            title: "Refino das microinterações",
+            text: "Transição, brilho e resposta ao hover, ajustados iteração a iteração até o gesto parecer natural.",
+            visual: "launcher",
+          },
+        ],
+        caption: "o vídeo do passo 1 é uma gravação real do Figma; os passos 2 e 3 são simulações do processo",
+      },
+      {
+        kind: "steps",
+        title: "Quem fez o quê",
+        items: [
+          {
+            label: "Eu",
+            title: "Front-end, design e microinterações",
+            text: "A interface do webchat e o comportamento de cada estado, codados com Claude Code.",
+          },
+          {
+            label: "Outro designer",
+            title: "Back-end",
+            text: "Roteamento por canal e o contrato de API para o time do portal.",
+          },
+          {
+            label: "Engenharia",
+            title: "Revisão e a rota no gateway",
+            text: "A camada de gateway, mais delicada, ficou com quem tem a profundidade para isso.",
+          },
+        ],
+      },
+      {
+        kind: "steps",
+        title: "Cinco dias, do zero ao MVP",
+        items: [
+          { label: "Dia 1", title: "Entender", text: "A arquitetura, com os devs que a construíram." },
+          { label: "Dias 2 a 4", title: "Construir", text: "Front e back, e os merge requests abertos." },
+          { label: "Dia 5", title: "MVP rodando", text: "Internamente, já usável." },
+          { label: "Depois", title: "Iterar", text: "Ajustes finos da engenharia." },
+        ],
+        caption:
+          "o inédito: eu já abria MR em ajustes pontuais. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.",
+      },
+      {
+        kind: "split",
+        title: "Tem alguém ali, não um FAQ",
+        text: [
+          "A solução começa no gesto: o ícone de dúvida vira a Diana quando o mouse se aproxima. É o convite, antes de qualquer conversa.",
+        ],
+        shot: clip("icone", "O ícone de dúvida se transforma na Diana quando o mouse se aproxima", 720, 720, [600, 600, "var(--color-ink)", 0, 0, 600, 600]),
+      },
+      {
+        kind: "split",
+        flip: true,
+        title: "Diana consultora, dentro do setup",
+        text: [
+          "O ícone de ajuda vira a Diana quando o parceiro passa o mouse.",
+          "Quick questions por etapa: no financeiro ela sugere perguntas de financeiro, no cardápio sugere perguntas de cardápio.",
+          "A mesma base do WhatsApp, agora com resposta síncrona e adaptada ao portal.",
+        ],
+        shot: clip(
+          "diana-desktop",
+          "A Diana conversando com um parceiro dentro do portal, no desktop e no celular",
+          1040,
+          874,
+          [641, 520, "var(--color-note-3)", 130, 60, 560, 470.6],
+          { video: "diana-mobile", alt: "A mesma conversa no celular", x: 34, y: 150, w: 150, h: 308 },
+        ),
+      },
+      {
+        kind: "text",
+        eyebrow: "Resultados · teste A/B, base crescente (30/30 → 50/50) · 26.08 a 21.09",
+        title: "Um setup com mais qualidade leva o parceiro à primeira venda",
+        text: [],
+      },
+      {
+        kind: "stats",
+        items: [
+          {
+            count: { to: 1.6, decimals: 2, prefix: "+", suffix: " p.p." },
+            label: "Ativado → 1º pedido",
+            sub: "51,00% para 52,68%",
+          },
+          {
+            count: { to: 100, prefix: "~" },
+            label: "primeiros pedidos incrementais no período",
+            sub: "impacto absoluto",
+          },
+        ],
+      },
+      {
+        kind: "text",
+        text: [
+          "O que mudou foi a qualidade do setup, e isso apareceu na etapa seguinte: mais parceiros chegando à primeira venda.",
+          "Portal → 1º pedido: +1,10 p.p. Portal → Ativado: 0,00 p.p. Foram 5.470 parceiros no controle e 5.522 na variante, medidos no painel oficial.",
+        ],
+      },
+      {
+        kind: "note",
+        label: "leitura direcional",
+        text: "O teste não tem significância estatística. Os números mostram a direção do efeito, não uma prova.",
+      },
+      {
+        kind: "steps",
+        title: "O que eu tirei disso",
+        items: [
+          {
+            label: "01",
+            title: "A fronteira ficou invisível, a profundidade não",
+            text: "Consigo construir e subir código. A rota no gateway continua sendo da engenharia, e saber onde eu paro é parte do trabalho.",
+          },
+          {
+            label: "02",
+            title: "Qualidade de código com IA não se garante na revisão",
+            text: "Tiramos as boas práticas da cabeça dos devs e viramos documentação. Quem entrou depois no time herdou o padrão.",
+          },
+          {
+            label: "03",
+            title: "O gargalo migrou",
+            text: "Antes o difícil era construir. Agora é decidir o que vale construir, e isso continua sendo decisão de produto e design.",
+          },
+          {
+            label: "04",
+            title: "Dois times, um atalho",
+            text: "O que destravou não foi só a ferramenta. Foi conseguir provar a hipótese sem disputar a prioridade de dois backlogs.",
+          },
+        ],
+      },
+    ],
+    tools: [
+      { name: "Figma", logo: "/stickers/figma.svg", emoji: "🎨", note: "esboço do webchat", color: "lilac" },
+      { name: "Claude Code", logo: "/stickers/claudecode.svg", emoji: "🤖", note: "front-end e microinterações", color: "yellow" },
+      { name: "GitLab", logo: "/stickers/gitlab.svg", emoji: "🦊", note: "MRs abertos por designers", color: "mint" },
+    ],
   },
   {
     slug: "monis-app",

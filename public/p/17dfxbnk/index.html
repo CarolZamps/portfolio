@@ -1,0 +1,1426 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Diana no Portal</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600;700&family=Caveat:wght@600&display=swap">
+<style>
+/* Layout: slides 16:9 em tela cheia, navegação por teclado; no celular viram cartões empilhados verticalmente */
+:root{
+  --paper:#ffffff; --ink:#151515; --muted:#55555c; --line:#e4e4e8;
+  --lime:#c6f432; --pink:#ff3e9a; --purple:#703ffe; --indigo:#5f6eff; --mist:#ebf6ff;
+  --display:"Bricolage Grotesque","Bricolage Grotesque Fallback",ui-sans-serif,system-ui,sans-serif;
+  --body:Inter,"Inter Fallback",ui-sans-serif,system-ui,sans-serif;
+  --hand:Caveat,"Caveat Fallback",cursive;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);
+  background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:22px 22px;
+  overflow:hidden;
+}
+button{font:inherit;color:inherit}
+
+/* ---------- palco ---------- */
+.stage{position:relative;height:100%;display:flex;flex-direction:column}
+.deck{position:relative;flex:1;min-height:0}
+.slide{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  padding-block:clamp(18px,2.6vh,40px);
+  padding-left:max(28px,env(safe-area-inset-left,0px));
+  padding-right:max(28px,env(safe-area-inset-right,0px));
+  overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;
+  animation:fade .2s ease both;
+}
+.slide[hidden]{display:none}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+/* os blocos sobem em cascata, com um leve atraso entre eles */
+.slide > .wrap > *{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+.slide > .wrap > *:nth-child(1){animation-delay:.05s}
+.slide > .wrap > *:nth-child(2){animation-delay:.13s}
+.slide > .wrap > *:nth-child(3){animation-delay:.21s}
+.slide > .wrap > *:nth-child(4){animation-delay:.29s}
+.slide > .wrap > *:nth-child(5){animation-delay:.37s}
+.slide > .wrap > *:nth-child(n+6){animation-delay:.45s}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .slide,.slide > .wrap > *{animation:none}
+  .mark{background-size:100% 100%!important;transition:none}
+}
+.wrap{width:100%;max-width:1240px;margin:0 auto}
+
+/* ---------- tipografia ---------- */
+.eyebrow{font-size:.66rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(2.6rem,7.4vw,5.2rem);line-height:.98;
+   letter-spacing:-.03em;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(1.3rem,2.7vw,2rem);line-height:1.1;
+   letter-spacing:-.025em;margin:0 0 14px;text-wrap:balance;max-width:16ch}
+h2.wide{max-width:25ch}
+.lede{font-size:clamp(.8rem,1.02vw,.92rem);line-height:1.55;color:var(--muted);margin:0;max-width:50ch}
+.lede strong{color:var(--ink);font-weight:600}
+.lede + .lede{margin-top:12px}
+.hand{font-family:var(--hand);font-size:1.45rem;color:var(--ink);transform:rotate(-1.4deg);display:inline-block}
+.mark{background-image:linear-gradient(var(--lime),var(--lime));background-repeat:no-repeat;
+      background-size:0% 100%;background-position:0 0;padding:.08em .3em;border-radius:4px;
+      transition:background-size .55s cubic-bezier(.4,0,.2,1) .3s;
+      box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.slide:not([hidden]) .mark{background-size:100% 100%}
+
+/* ---------- grelhas ---------- */
+.split{display:grid;grid-template-columns:minmax(0,.58fr) minmax(0,1.42fr);gap:clamp(18px,2.6vw,40px);align-items:center}
+.split.text-right{grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr)}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.cols-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+
+/* ---------- blocos ---------- */
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px 22px;min-width:0}
+.card h3{font-family:var(--display);font-weight:600;font-size:.97rem;margin:0 0 7px;letter-spacing:-.01em}
+.card p{margin:0;font-size:.86rem;line-height:1.5;color:var(--muted)}
+.card p + p{margin-top:8px}
+.card .who{font-size:.68rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.card.on-lime{background:var(--lime);border-color:transparent}
+.card.on-lime p,.card.on-lime .who{color:#2a3d00}
+.card.on-mist{background:var(--mist);border-color:transparent}
+.card.on-purple{background:var(--purple);border-color:transparent;color:#fff}
+.card.on-purple p,.card.on-purple .who{color:#e2daff}
+
+figure{margin:0;min-width:0}
+figure img{display:block;width:100%;max-width:100%;height:auto;border-radius:18px;border:1px solid var(--line)}
+figure.plain img{border:0}
+figcaption{margin-top:10px;font-size:.78rem;color:var(--muted)}
+
+ul.ticks{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+ul.ticks li{position:relative;padding-left:21px;font-size:clamp(.77rem,.95vw,.86rem);line-height:1.5;color:var(--muted);max-width:48ch}
+ul.ticks li::before{content:"";position:absolute;left:0;top:.5em;width:9px;height:9px;border-radius:50%;background:var(--lime)}
+ul.ticks li strong{color:var(--ink);font-weight:600}
+ul.ticks.pink li::before{background:var(--pink)}
+ul.ticks.purple li::before{background:var(--purple)}
+ul.ticks.tight{gap:10px}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{font-size:.71rem;font-weight:600;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line)}
+.chip.lime{background:var(--lime);border-color:transparent}
+.chip.mist{background:var(--mist);border-color:transparent}
+
+/* números */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:4px 0 0}
+.stats.two{grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px}
+.stat{border:1px solid var(--line);border-radius:20px;padding:20px 22px;background:#fff}
+.stat .k{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+         margin:0 0 10px;min-height:2.2em;display:flex;align-items:flex-start}
+.stat .v{font-family:var(--display);font-size:clamp(2rem,4.2vw,2.9rem);font-weight:600;letter-spacing:-.03em;
+         line-height:1;font-variant-numeric:tabular-nums;margin:0}
+.stat .v small{font-size:.44em;font-weight:500}
+.stat .n{margin:10px 0 0;font-size:.8rem;color:var(--muted);line-height:1.4}
+.stat.up .v{color:var(--purple)}
+.stat.hero{background:var(--lime);border-color:transparent}
+.stat.hero .k,.stat.hero .n{color:#2a3d00}
+.stat.hero .v{color:#151515}
+
+.note{margin-top:18px;padding:13px 18px;border-left:3px solid var(--pink);background:#fff;border-radius:0 14px 14px 0;
+      font-size:.84rem;line-height:1.55;color:var(--muted);max-width:68ch}
+.note strong{color:var(--ink);font-weight:600}
+.note.purple{border-left-color:var(--purple)}
+
+/* linha do tempo */
+.rail{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
+.step{position:relative;padding-top:20px;min-width:0}
+.step::before{content:"";position:absolute;top:4px;left:0;right:0;height:3px;border-radius:2px;background:var(--line)}
+.step.done::before{background:var(--purple)}
+.step .d{font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.step p{margin:0;font-size:.87rem;line-height:1.45}
+
+/* vídeo e slots */
+.phone{position:relative;margin:0 auto;width:min(248px,58vw);border-radius:30px;overflow:hidden;
+       border:8px solid #151515;background:#151515;box-shadow:0 18px 44px rgba(21,21,21,.2)}
+.phone video,.phone img{display:block;width:100%;height:auto;border:0;border-radius:0}
+.slot{
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  border:2px dashed #c3c6cd;border-radius:18px;background:#fafbfc;
+  padding:18px 16px;text-align:center;min-height:120px;
+}
+.slot .tag{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8a8d96}
+.slot p{margin:0;font-size:.85rem;line-height:1.45;color:var(--muted);max-width:30ch}
+.slot.ar16{aspect-ratio:16/10;min-height:0;max-width:100%}
+.slot.ar9{aspect-ratio:9/16;min-height:0;width:min(216px,52vw);margin:0 auto}
+.slot video,.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:16px;border:0}
+.ref img{max-height:168px;object-fit:cover;object-position:center 42%;border-radius:12px;opacity:.72}
+.ref figcaption{margin-top:8px}
+
+/* processo */
+.procs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:22px}
+.proc{min-width:0}
+.proc .n{font-family:var(--display);font-size:.78rem;font-weight:700;letter-spacing:.1em;color:var(--purple);margin:0 0 8px}
+.proc h3{font-family:var(--display);font-weight:600;font-size:1rem;margin:0 0 6px;letter-spacing:-.01em}
+.proc p{margin:0 0 10px;font-size:.81rem;line-height:1.45;color:var(--muted)}
+
+/* capa: o cursor do Figma desenha o frame e grifa o título */
+.cover .wrap{position:relative}
+.framed{position:relative;display:inline-block;max-width:100%}
+.slide.cover > .wrap > *{animation:none}
+
+/* só esconde o conteúdo quando a animação vai mesmo rodar */
+.cover.anim .tag{opacity:0;transform:rotate(-1.4deg) translateY(8px);background-size:0% 100%}
+.cover.anim h1{opacity:0}
+.cover.anim .sub,.cover.anim .by{opacity:0;transform:translateY(10px)}
+.cover.anim .tag{transition:opacity .4s ease,transform .4s cubic-bezier(.2,.7,.3,1),
+                            background-size .62s cubic-bezier(.4,0,.2,1) .12s}
+.cover.anim h1,.cover.anim .sub,.cover.anim .by{
+  transition:opacity .45s ease,transform .45s cubic-bezier(.2,.7,.3,1)}
+
+/* o título é digitado, linha a linha, com o cursor acompanhando */
+.tw{display:inline-block;max-width:100%}
+.cover.anim .tw{width:0;overflow:hidden;white-space:nowrap;vertical-align:bottom;
+                border-right:3px solid transparent}
+.cover.anim.c4 h1{opacity:1}
+.cover.anim.c4 .tw1{animation:typew .5s steps(5) forwards, carA .5s steps(1)}
+.cover.anim.c4 .tw2{animation:typew .8s steps(9) .5s forwards, carB 1.3s steps(1)}
+@keyframes typew{to{width:var(--w)}}
+@keyframes carA{0%,99%{border-right-color:#151515}}
+@keyframes carB{0%,38%{border-right-color:transparent}39%,99%{border-right-color:#151515}}
+
+.cover.anim.c6 .sub{opacity:1;transform:none}
+.cover.anim.c7 .tag{opacity:1;transform:rotate(-1.4deg);background-size:100% 100%}
+.cover.anim.c8 .by{opacity:1;transform:none}
+
+.figframe{position:absolute;top:-26px;left:-26px;width:0;height:0;opacity:0;
+  border:1.5px solid var(--purple);border-radius:3px;pointer-events:none;
+  transition:opacity .18s ease,
+             width .62s cubic-bezier(.33,.85,.4,1),
+             height .62s cubic-bezier(.33,.85,.4,1)}
+.cover.c1 .figframe{opacity:1}
+.cover.c2 .figframe{width:calc(100% + 52px);height:calc(100% + 52px)}
+.fname{position:absolute;top:-19px;left:0;font-size:11px;font-weight:600;color:var(--purple);
+  white-space:nowrap;opacity:0;transition:opacity .25s ease}
+.cover.c3 .fname{opacity:1}
+.hd{position:absolute;width:7px;height:7px;background:#fff;border:1.5px solid var(--purple);
+  border-radius:1px;opacity:0;transition:opacity .22s ease}
+.cover.c3 .hd{opacity:1}
+.hd.tl{top:-4px;left:-4px}.hd.tr{top:-4px;right:-4px}
+.hd.bl{bottom:-4px;left:-4px}.hd.br{bottom:-4px;right:-4px}
+
+.figcursor{position:absolute;left:0;top:0;z-index:6;pointer-events:none;opacity:0;
+  display:flex;align-items:flex-start;
+  transition:opacity .25s ease,transform .62s cubic-bezier(.33,.85,.4,1)}
+.cover.c1 .figcursor{opacity:1}
+.cover.c9 .figcursor{opacity:0}
+.figcursor .pill{margin:13px 0 0 -3px;background:var(--pink);color:#fff;font-size:11px;font-weight:600;
+  padding:3px 9px 4px;border-radius:999px;white-space:nowrap;box-shadow:0 3px 10px rgba(21,21,21,.2)}
+
+.hlp{background-image:linear-gradient(rgba(255,62,154,.45),rgba(255,62,154,.45));
+  background-repeat:no-repeat;background-position:0 88%;background-size:0% 38%;
+  padding:0 .05em;transition:background-size .68s cubic-bezier(.4,0,.2,1)}
+.cover.anim.c5 .hlp,.cover:not(.anim) .hlp{background-size:100% 38%}
+
+/* painéis coloridos no lugar do fundo preto */
+.panel{border-radius:20px;padding:8px}
+.panel.blue{background:var(--mist)}
+.panel.lime{background:#f2fbd9}
+.panel.violet{background:#f1ecff}
+.panel img,.panel video{border:0;border-radius:12px;box-shadow:0 6px 20px rgba(21,21,21,.09);display:block;width:100%;height:auto}
+.panel figcaption{margin-top:10px;padding:0 4px}
+
+/* lado a lado: a mídia avança sobre o respiro vertical do slide,
+   ganhando altura sem empurrar o texto para baixo */
+.wrap.split{max-width:1480px}
+.split > .media,.split > figure.media{
+  margin-block:calc(-1 * clamp(18px,2.6vh,40px));
+  display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0}
+.split .media img,.split .media video,.split figure.media img,.split figure.media video{
+  max-height:calc(100vh - 118px);width:auto;max-width:100%;height:auto;object-fit:contain}
+.split .panel{padding:10px}
+.split .panel .bleedbox{max-height:calc(100vh - 150px);width:100%}
+.split .panel .bleedbox video{max-height:calc(100vh - 150px);width:112%;max-width:none;height:auto;
+  object-fit:cover;object-position:left center}
+.split .devices{width:100%;max-width:min(100%,calc((100vh - 150px) * 1.16))}
+
+/* empilhado: a mídia ocupa toda a altura que sobra.
+   A altura é travada em unidades de tela porque max-height em porcentagem
+   não resolve contra um pai de altura automática. */
+.slide > .wrap.stack{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+  gap:clamp(14px,2.2vh,26px);--mediaH:calc(100vh - 360px)}
+.stack .shead{flex:none}
+.stack .shead .eyebrow{margin-bottom:7px}
+.stack .shead h2{margin:0;max-width:36ch}
+.stack .sbody{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
+.stack .sbody > *{margin:0;max-width:100%;min-height:0}
+.stack .panel{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0}
+.stack .panel > img,.stack .panel > video,
+.stack .media > img,.stack .media > video{
+  max-height:var(--mediaH);max-width:100%;width:auto;height:auto;object-fit:contain}
+.stack .panel .bleedbox{min-height:0;max-height:var(--mediaH)}
+.stack .panel .bleedbox video{max-height:var(--mediaH);width:112%;max-width:none;height:auto;
+  object-fit:cover;object-position:left top}
+.stack .devices{max-width:min(100%,calc(var(--mediaH) * 1.16))}
+.stack .mock{height:var(--mediaH)}
+.stack .shotv{display:flex;align-items:center;justify-content:center;min-height:0;max-height:var(--mediaH)}
+.stack .shotv video{max-height:var(--mediaH);max-width:100%;width:auto;height:auto;
+  border-radius:12px;box-shadow:0 8px 26px rgba(21,21,21,.12)}
+.stack .mock .mwin{height:100%;max-width:1260px}
+.sfoot{flex:none;display:flex;gap:clamp(14px,2.2vw,32px);align-items:flex-start;flex-wrap:wrap}
+.sfoot .lede{max-width:44ch;margin:0}
+.sfoot ul.ticks{margin:0;flex:1;min-width:230px}
+.sfoot .chips{margin:0}
+.sfoot .note{margin:0}
+
+/* resumo da linha do tempo acima de cada etapa */
+.tline{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.6vw,22px);flex:none}
+.tstep{padding-top:11px;border-top:3px solid var(--line);min-width:0;opacity:.38;transition:opacity .3s ease}
+.tstep.on{opacity:1;border-top-color:var(--purple)}
+.tn{display:block;font-family:var(--display);font-size:.68rem;font-weight:700;letter-spacing:.1em;
+    color:var(--purple);margin-bottom:3px}
+.tl{font-size:.8rem;font-weight:600;line-height:1.3;display:block}
+.td{margin:6px 0 0;font-size:.78rem;line-height:1.5;color:var(--muted);max-width:44ch}
+
+/* scorecard das conversas, no visual da apresentação */
+.scard{width:100%;display:flex;justify-content:center;min-width:0}
+.scwin{width:100%;max-width:840px;background:#fff;border:1px solid var(--line);border-radius:20px;
+  overflow:hidden;box-shadow:0 12px 34px rgba(21,21,21,.1)}
+.scrow{position:relative;display:grid;align-items:center;gap:clamp(8px,1vw,16px);
+  grid-template-columns:minmax(0,1.6fr) .55fr .8fr .95fr .95fr 1fr;
+  padding:clamp(10px,1.5vh,15px) clamp(14px,1.6vw,22px);border-bottom:1px solid var(--line)}
+.scrow:last-child{border-bottom:0}
+.scrow::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+.scrow.ok::before{background:var(--lime)}
+.scrow.no::before{background:var(--pink)}
+.scrow.half::before{background:#ffb648}
+.schead{background:#fafbfc;padding-block:10px}
+.schead::before{display:none}
+.schead span{font-size:.64rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.scrow > span{font-size:.82rem;font-variant-numeric:tabular-nums}
+.sccen{font-weight:600;font-size:.88rem}
+.schead .sccen{font-size:.64rem;font-weight:600}
+.sc{display:flex;flex-direction:column;gap:5px}
+.sc b{font-weight:600;font-variant-numeric:tabular-nums}
+.sc i{display:block;height:4px;border-radius:2px;background:#eceef2;position:relative;font-style:normal}
+.sc i::after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--v);border-radius:2px;background:var(--purple)}
+.sc.mid i::after{background:#ffb648}
+.sc.low i::after{background:var(--pink)}
+.scv{justify-self:start;font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 11px;border-radius:999px;white-space:nowrap}
+.scv.ok{background:var(--lime);color:#2a3d00}
+.scv.no{background:var(--pink);color:#fff}
+.scv.half{background:#ffb648;color:#3b2800}
+.sccap{margin:12px 0 0;font-size:.74rem;color:var(--muted);text-align:center}
+@media (max-width:760px){
+  .scrow{grid-template-columns:minmax(0,1.4fr) .6fr 1fr;gap:8px}
+  .scrow > span:nth-child(3),.scrow > span:nth-child(5){display:none}
+}
+
+/* celular com a conversa da Diana no WhatsApp */
+.waphone{
+  --s:clamp(9px,1.75vh,18px);
+  font-size:var(--s);width:calc(var(--s) * 22);aspect-ratio:22/45;max-width:100%;
+  display:flex;flex-direction:column;overflow:hidden;
+  background:#e9e1d8;border:.46em solid #fff;border-radius:2.9em;
+  box-shadow:0 1.5em 3.4em rgba(21,21,21,.2),0 0 0 1px rgba(21,21,21,.07);
+  font-family:var(--body)}
+.wahead{flex:none;display:flex;align-items:center;gap:.65em;padding:.9em .95em;
+  background:#f7f7f8;border-bottom:1px solid rgba(21,21,21,.08)}
+.wahead .bk{color:#2e6fe0;font-size:1.35em;line-height:.8;flex:none}
+.media .waphone .wahead img{width:2.7em;height:2.7em;min-width:2.7em;max-width:2.7em;max-height:2.7em;
+  border-radius:50%;flex:none;border:0;box-shadow:none;object-fit:cover;display:block}
+.wanm{display:flex;flex-direction:column;line-height:1.18;min-width:0}
+.wanm b{font-size:1.02em;font-weight:600;display:flex;align-items:center;gap:.32em;white-space:nowrap}
+.wanm > span{font-size:.8em;color:#8d8d94}
+.vfy{width:1em;height:1em;border-radius:50%;background:#25d366;display:inline-grid;place-items:center;
+  color:#fff;font-size:.62em;font-weight:700;font-style:normal;flex:none}
+.wabody{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:flex-end;gap:.62em;
+  padding:1.1em .85em;background:#e9e1d8;
+  background-image:radial-gradient(rgba(21,21,21,.045) 1px,transparent 1px);background-size:1.7em 1.7em}
+.wab{max-width:87%;padding:.62em .8em .45em;border-radius:.95em;font-size:.95em;line-height:1.4;
+  box-shadow:0 1px 1.5px rgba(21,21,21,.09)}
+.wab i{display:block;text-align:right;font-style:normal;font-size:.7em;color:#9b9ba2;margin-top:.3em}
+.wab.in{align-self:flex-start;background:#fff;border-top-left-radius:.24em}
+.wab.out{align-self:flex-end;background:#dcf8c6;border-top-right-radius:.24em}
+.wab.out i{color:#77935f}
+.wafoot{flex:none;display:flex;align-items:center;gap:.6em;padding:.75em .85em;
+  background:#f7f7f8;border-top:1px solid rgba(21,21,21,.08)}
+.wafoot span{flex:1;background:#fff;border-radius:1.3em;padding:.52em .9em;font-size:.86em;color:#aaaab1;
+  border:1px solid rgba(21,21,21,.08)}
+.wafoot em{font-style:normal;width:2em;height:2em;border-radius:50%;background:#25d366;flex:none;
+  display:grid;place-items:center;color:#fff;font-size:.92em;line-height:1}
+
+/* simulações do processo */
+.mock{width:100%;height:100%;display:flex;align-items:center;justify-content:center;min-height:0}
+.mwin{width:100%;max-width:960px;max-height:100%;background:#fff;border:1px solid var(--line);
+      border-radius:14px;overflow:hidden;box-shadow:0 14px 40px rgba(21,21,21,.13);
+      display:flex;flex-direction:column;min-height:0}
+.mwin.dark{background:#16161a;border-color:#2b2b33}
+.mbar{flex:none;display:flex;align-items:center;gap:6px;padding:9px 14px;border-bottom:1px solid var(--line);background:#fafbfc}
+.mwin.dark .mbar{background:#1d1d23;border-bottom-color:#2b2b33}
+.mbar i{width:9px;height:9px;border-radius:50%;background:#dcdde1;flex:none}
+.mwin.dark .mbar i{background:#3b3b46}
+.mbar span{margin-left:8px;font-size:.7rem;font-weight:600;color:var(--muted)}
+.mwin.dark .mbar span{color:#8d8d9a}
+@keyframes seq{0%{opacity:0;transform:translateY(7px)}7%,84%{opacity:1;transform:none}95%,100%{opacity:0}}
+.sq{animation:seq 8s infinite both}
+
+/* 01 · Figma */
+.mfig{flex:1;min-height:0;display:grid;grid-template-columns:178px minmax(0,1fr)}
+.mlayers{border-right:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:6px;background:#fcfcfd}
+.ml{font-size:.7rem;color:var(--muted);padding:4px 7px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ml.on{background:#ece6ff;color:var(--purple);font-weight:600}
+.mcanvas{position:relative;display:grid;place-items:center;min-height:0;padding:18px;
+  background-image:radial-gradient(var(--line) 1px,transparent 1px);background-size:16px 16px}
+.mframe{position:relative;width:min(540px,42%);background:#fff;border:1.5px solid var(--purple);border-radius:14px;
+  padding:20px 18px;display:flex;flex-direction:column;align-items:center;gap:9px;animation:draw 8s infinite both}
+@keyframes draw{0%{transform:scale(.28);opacity:0}6%,86%{transform:none;opacity:1}96%,100%{opacity:0}}
+.mframe::before{content:"webchat";position:absolute;top:-15px;left:0;font-size:9px;font-weight:600;color:var(--purple)}
+.fav{width:clamp(46px,7vh,60px);height:clamp(46px,7vh,60px);border-radius:50%;background:linear-gradient(140deg,#f3b9c8,#bd5169)}
+.fbar{height:7px;border-radius:4px;background:#e9eaee}
+.fbar.w1{width:80%}.fbar.w2{width:56%}
+.fchips{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+.fchips span{height:18px;border-radius:999px;background:#eceef2}
+.fchips span:nth-child(1){width:52px}.fchips span:nth-child(2){width:64px}.fchips span:nth-child(3){width:42px}
+.finput{width:100%;height:38px;border-radius:7px;border:1.4px solid #f2c6d6}
+.mcur{position:absolute;width:0;height:0;border-left:9px solid var(--ink);border-bottom:12px solid transparent;
+  border-right:5px solid transparent;animation:fcur 8s infinite both}
+@keyframes fcur{0%{left:20%;top:22%;opacity:0}4%{opacity:1}14%{left:72%;top:74%}
+  34%{left:48%;top:38%}64%{left:55%;top:68%}90%{opacity:1}100%{left:55%;top:68%;opacity:0}}
+
+/* 02 · Claude Code */
+.tbody{flex:1;min-height:0;padding:20px 26px;overflow:hidden;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:clamp(.74rem,1.05vh,.92rem);line-height:2.05;color:#d6d6e0}
+.tbody p{margin:0}
+.tprompt b{color:#c6f432;margin-right:6px}
+.ttype{display:inline-block;overflow:hidden;white-space:nowrap;vertical-align:bottom;
+  border-right:2px solid #c6f432;width:0;animation:twrite 8s infinite both}
+@keyframes twrite{0%{width:0;animation-timing-function:steps(41,end)}17%{width:41ch}100%{width:41ch}}
+.tln{display:flex;gap:10px;align-items:baseline}
+.tln em{font-style:normal;color:#8fb5ff;min-width:46px}
+.tln s{text-decoration:none;color:#6d6d7b;margin-left:auto}
+.tln .ok{color:#4cd483;font-weight:700}
+
+/* 03 · Microinterações */
+.ubody{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;
+  gap:clamp(26px,5vw,76px);padding:24px 30px;flex-wrap:wrap}
+.ustage{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;min-height:0}
+.lnch{position:relative;width:clamp(120px,26vh,216px);height:clamp(120px,26vh,216px);border-radius:50%;
+  background:#151515;display:grid;place-items:center;color:#fff;font-weight:700;
+  font-size:clamp(2.2rem,6vh,4rem);animation:lnch 6s infinite both}
+@keyframes lnch{0%,26%{transform:scale(1)}38%,60%{transform:scale(1.07)}72%,100%{transform:scale(1)}}
+.lnch::before{content:"";position:absolute;inset:-14px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,62,154,.5),transparent 68%);opacity:0;animation:glow 6s infinite both}
+@keyframes glow{0%,24%{opacity:0}38%,60%{opacity:1}74%,100%{opacity:0}}
+.lav{position:absolute;inset:7px;border-radius:50%;background:linear-gradient(140deg,#f6c3cf,#b14a63);
+  opacity:0;z-index:3;animation:lav 6s infinite both}
+@keyframes lav{0%,32%{opacity:0}42%,60%{opacity:1}70%,100%{opacity:0}}
+.lnch .q{position:relative;z-index:2;animation:qfade 6s infinite both}
+@keyframes qfade{0%,32%{opacity:1}42%,60%{opacity:0}70%,100%{opacity:1}}
+.ustate{position:relative;height:1.2em;width:100%;margin:0;font-size:.86rem;font-weight:600;color:var(--muted);text-align:center}
+.ustate span{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;opacity:0}
+.ustate span:nth-child(1){animation:us1 6s infinite both}
+.ustate span:nth-child(2){animation:us2 6s infinite both}
+.ustate span:nth-child(3){animation:us3 6s infinite both}
+@keyframes us1{0%,24%{opacity:1}30%,100%{opacity:0}}
+@keyframes us2{0%,28%{opacity:0}34%,56%{opacity:1}62%,100%{opacity:0}}
+@keyframes us3{0%,60%{opacity:0}66%,92%{opacity:1}98%,100%{opacity:0}}
+.props{display:flex;flex-direction:column;gap:10px;width:248px;flex:none}
+.prow{display:flex;justify-content:space-between;gap:10px;font-size:.82rem;padding:12px 15px;
+  border:1px solid var(--line);border-radius:9px;transition:none}
+.prow b{font-variant-numeric:tabular-nums}
+.prow:nth-child(1){animation:ph1 6s infinite both}
+.prow:nth-child(2){animation:ph2 6s infinite both}
+.prow:nth-child(3){animation:ph3 6s infinite both}
+@keyframes ph1{0%,16%{border-color:var(--purple);background:#f4f0ff}24%,100%{border-color:var(--line);background:#fff}}
+@keyframes ph2{0%,26%{border-color:var(--line);background:#fff}34%,50%{border-color:var(--purple);background:#f4f0ff}58%,100%{border-color:var(--line);background:#fff}}
+@keyframes ph3{0%,60%{border-color:var(--line);background:#fff}68%,86%{border-color:var(--purple);background:#f4f0ff}94%,100%{border-color:var(--line);background:#fff}}
+
+@media (prefers-reduced-motion:reduce){
+  .sq,.mframe,.mcur,.ttype,.lnch,.lnch::before,.lav,.lnch .q,.ustate span,.prow{animation:none!important}
+  .ttype{width:41ch}.ustate span:nth-child(2){opacity:1}
+}
+@media (max-width:760px){
+  .mfig{grid-template-columns:minmax(0,1fr)}
+  .mlayers{display:none}
+  .ubody{flex-direction:column;gap:18px}
+}
+
+/* slide escuro: o ícone em tela cheia */
+.slide.dark{background:#000;color:#fff}
+.slide.dark .wrap{max-width:860px;text-align:center}
+.slide.dark .eyebrow{color:#86868f}
+.iconstage{margin:0 auto;width:min(520px,52vh);max-width:100%;line-height:0}
+.iconstage video{display:block;width:100%;height:auto;border:0;border-radius:0}
+.darkline{font-family:var(--display);font-weight:600;letter-spacing:-.02em;color:#fff;
+  font-size:clamp(1.35rem,2.8vw,2rem);line-height:1.2;margin:14px auto 0;max-width:22ch;text-wrap:balance}
+.darksub{margin:12px auto 0;font-size:.92rem;line-height:1.55;color:#95959e;max-width:46ch}
+
+/* imagem que continua para fora da tela:
+   respiro nos três lados, e no lado do corte ela encosta na borda, sem raio */
+.bleedbox{overflow:hidden;border-radius:14px 0 0 14px;box-shadow:0 6px 20px rgba(21,21,21,.09)}
+.panel .bleedbox video,.panel .bleedbox img{width:112%;max-width:none;border-radius:0;box-shadow:none;
+  object-fit:cover;object-position:left center}
+/* quanto falta do fim do bloco até a borda da tela */
+.split > figure.media.panel.blue{
+  --saida:calc(max(28px,env(safe-area-inset-right,0px)) + max(0px,(100vw - 56px - 1480px) / 2));
+  padding:clamp(16px,2.4vh,30px);padding-right:0;
+  margin-right:calc(-1 * var(--saida));
+  border-radius:24px 0 0 24px;
+  align-items:stretch}
+
+/* vídeo solto, sem moldura */
+.vid{display:block;width:100%;height:auto;border-radius:16px;border:1px solid var(--line)}
+
+/* composição desktop + celular */
+.devices{position:relative;padding-bottom:26px;width:100%;max-width:min(100%,64vh);margin-inline:auto}
+.screen{border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff;
+        box-shadow:0 12px 32px rgba(21,21,21,.11)}
+.screen video{display:block;width:100%;height:auto}
+.handset{position:absolute;left:-10px;bottom:0;width:25%;min-width:96px;
+         border-radius:15px;overflow:hidden;border:5px solid #151515;background:#151515;
+         box-shadow:0 14px 30px rgba(21,21,21,.26)}
+.handset video{display:block;width:100%;height:auto}
+
+/* quadro branco sobreposto ao fluxo */
+.wbover{position:absolute;right:-4px;top:-88px;z-index:3;width:min(276px,26%);
+        background:#fff;padding:7px 7px 5px;border-radius:10px;
+        box-shadow:0 16px 38px rgba(21,21,21,.2);transform:rotate(-1.8deg)}
+.wbover img{display:block;width:100%;height:auto;border-radius:5px;border:0}
+.wbover figcaption{margin:6px 2px 1px;font-size:.66rem;line-height:1.3;color:var(--muted)}
+
+/* fluxo animado da arquitetura */
+.wide-wrap{max-width:1260px}
+.archead{display:flex;align-items:flex-start;justify-content:space-between;gap:28px}
+.archead h2{margin-bottom:0}
+.thumb{flex:none;width:168px}
+.thumb img{border-radius:10px;max-height:94px;object-fit:cover;object-position:center 42%;opacity:.62}
+.thumb figcaption{margin-top:6px;font-size:.68rem}
+.flowbox{position:relative;margin:14px 0 4px}
+.flow{display:block;width:100%;height:auto;max-height:46vh}
+.replay{position:absolute;right:0;top:-4px;border:1px solid var(--line);background:#fff;border-radius:999px;
+        padding:5px 13px;font-size:.72rem;font-weight:600;cursor:pointer;color:var(--muted)}
+.replay:hover{background:var(--mist);border-color:transparent;color:var(--ink)}
+.arcfoot{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:4px;
+         padding-top:16px;border-top:1px solid var(--line)}
+.arcfoot div{min-width:0}
+.arcfoot strong{display:block;font-family:var(--display);font-size:.9rem;margin-bottom:4px}
+.arcfoot span{font-size:.82rem;line-height:1.45;color:var(--muted)}
+
+/* estados do fluxo */
+.flow .zt{font-family:var(--display);font-size:11px;font-weight:700;letter-spacing:.1em;fill:#55555c}
+.flow .nl{font-family:var(--body);font-size:12.5px;font-weight:600;fill:#151515;text-anchor:middle}
+.flow .nl.mono{font-size:11.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.flow .sm{font-family:var(--body);font-size:9.5px;fill:#55555c;text-anchor:middle}
+.flow .sm.start{text-anchor:start}
+.flow .nd{opacity:.28;transition:opacity .4s ease}
+.flow .nd.on{opacity:1}
+.flow .nd rect{fill:#fff;stroke:#151515;stroke-width:1.5}
+.flow .nd.key rect{stroke:#703ffe;stroke-width:2}
+.flow .ln{fill:none;stroke:#703ffe;stroke-width:2.5;stroke-linecap:round;
+          stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset .6s cubic-bezier(.4,0,.2,1)}
+.flow .ln.on{stroke-dashoffset:0;marker-end:url(#ah)}
+.flow .gh{fill:none;stroke:#b9bcc4;stroke-width:2;stroke-dasharray:5 4;opacity:0;transition:opacity .5s ease}
+.flow .gh.on{opacity:1}
+.flow .lb{opacity:0;transition:opacity .45s ease}
+.flow .lb.on{opacity:1}
+.flow .bub{opacity:0;transform:translateY(6px);transform-box:fill-box;transition:opacity .4s ease,transform .4s ease}
+.flow .bub.on{opacity:1;transform:none}
+.flow .grp{opacity:0;transition:opacity .5s ease}
+.flow .grp.on{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  .flow .ln,.flow .gh,.flow .lb,.flow .bub,.flow .nd,.flow .grp{transition:none}
+}
+@media (max-width:760px){
+  .split > .media,.split > figure.media{margin-block:0}
+  .split .media img,.split .media video,.split figure.media img,.split figure.media video{max-height:none;width:100%}
+  .split .panel .bleedbox,.split .panel .bleedbox video{max-height:none}
+  .split > figure.media.panel.blue{margin-right:0;padding:12px;border-radius:18px}
+  .bleedbox{border-radius:12px}
+  .panel .bleedbox video{width:100%}
+  .split .devices{max-width:100%}
+  .slide > .wrap.stack{display:block;--mediaH:none}
+  .stack .sbody{display:block;margin:14px 0}
+  .stack .panel > img,.stack .panel > video,.stack .media > img,.stack .media > video{max-height:none;width:100%}
+  .stack .panel .bleedbox,.stack .panel .bleedbox video{max-height:none}
+  .stack .mock{height:auto}
+  .stack .mock .mwin{height:auto}
+  .stack .devices{max-width:100%}
+  .sfoot{flex-direction:column;gap:14px}
+  .tline{grid-template-columns:minmax(0,1fr);gap:8px}
+  .tstep{opacity:1}
+  .figcursor{display:none}
+  .figframe{top:-12px;left:-12px}
+  .cover.c2 .figframe{width:calc(100% + 24px);height:calc(100% + 24px)}
+  .wbover{position:static;width:100%;max-width:300px;transform:none;margin:0 0 14px;box-shadow:0 8px 20px rgba(21,21,21,.12)}
+  .archead{flex-direction:column}
+  .thumb{width:100%;max-width:220px}
+  .arcfoot{grid-template-columns:minmax(0,1fr);gap:12px}
+  .flow{max-height:none}
+  .replay{position:static;margin-top:10px}
+}
+
+/* ferramentas */
+.tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.tool{display:flex;align-items:center;gap:9px;padding:9px 15px 9px 11px;border:1px solid var(--line);
+      border-radius:14px;background:#fff;font-size:.86rem;font-weight:600}
+.tool i{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;flex:none;
+        font-style:normal;font-size:.68rem;font-weight:700;color:#fff;letter-spacing:-.02em}
+.tool i.logo{background:none;border-radius:0}
+.tool i.logo img{width:100%;height:100%;object-fit:contain;display:block}
+
+/* capa */
+.cover .tag{display:inline-block;font-family:var(--hand);font-size:1.3rem;
+            background-image:linear-gradient(var(--lime),var(--lime));background-repeat:no-repeat;
+            background-size:100% 100%;background-position:0 0;
+            padding:4px 16px 6px;border-radius:4px;transform:rotate(-1.4deg);margin-bottom:20px}
+.cover .sub{margin:24px 0 0;font-size:clamp(1rem,1.65vw,1.26rem);line-height:1.5;color:var(--muted);max-width:48ch}
+.cover .by{margin-top:clamp(24px,4.4vh,46px);padding-top:18px;border-top:1px solid var(--line);
+           display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline;font-size:.9rem}
+.cover .by b{font-weight:600}
+.cover .by span{color:var(--muted)}
+
+.big{font-family:var(--display);font-weight:600;font-size:clamp(1.5rem,3.3vw,2.4rem);line-height:1.2;
+     letter-spacing:-.02em;margin:0;max-width:24ch;text-wrap:balance}
+
+/* ---------- barra ---------- */
+.bar{
+  flex:none;display:flex;align-items:center;gap:14px;padding-block:10px;
+  padding-left:max(20px,env(safe-area-inset-left,0px));
+  padding-right:max(20px,env(safe-area-inset-right,0px));
+  border-top:1px solid var(--line);background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
+}
+.bar .title{font-weight:600;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .track{flex:1;height:4px;border-radius:2px;background:var(--line);overflow:hidden;min-width:40px}
+.bar .fill{height:100%;background:var(--ink);border-radius:2px;transition:width .3s ease}
+.bar .count{font-size:.8rem;font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+.nav{display:flex;gap:6px}
+.nav button,.ghost{width:34px;height:34px;border-radius:999px;border:1px solid var(--line);background:#fff;
+  cursor:pointer;display:grid;place-items:center;font-size:.95rem;line-height:1;padding:0}
+.ghost{width:auto;padding:0 14px;font-size:.78rem;font-weight:600}
+.nav button:hover,.ghost:hover{background:var(--mist);border-color:transparent}
+.nav button:disabled{opacity:.3;cursor:default}
+:is(button,a):focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+
+/* ---------- celular ---------- */
+@media (max-width:760px){
+  body{overflow:auto}
+  html,body{height:auto}
+  .stage{height:auto}
+  .deck{position:static}
+  .slide{position:static;inset:auto;min-height:auto;overflow:visible;padding-block:40px;
+         border-bottom:1px solid var(--line);
+         padding-left:max(16px,env(safe-area-inset-left,0px));
+         padding-right:max(16px,env(safe-area-inset-right,0px));animation:none}
+  .slide[hidden]{display:block!important}
+  .split,.split.text-right,.cols,.cols-2,.stats,.stats.two,.rail,.procs{grid-template-columns:minmax(0,1fr)}
+  .split .media{order:2}
+  .bar{position:sticky;bottom:0}
+  .nav,.bar .count{display:none}
+  h2{max-width:none}
+}
+</style>
+
+<div class="stage">
+  <div class="deck" id="deck">
+
+    <!-- 1 · CAPA -->
+    <section class="slide cover" data-t="Capa">
+      <div class="wrap">
+        <div class="framed" id="framed">
+          <div class="figframe" aria-hidden="true">
+            <span class="fname">Diana no Portal</span>
+            <i class="hd tl"></i><i class="hd tr"></i><i class="hd bl"></i><i class="hd br"></i>
+          </div>
+          <span class="tag">oi, pode me chamar de Carol</span>
+          <h1><span class="tw tw1">Diana</span><br><span class="hlp tw tw2">no Portal</span></h1>
+          <p class="sub">O primeiro produto do time construído inteiro com vibe coding, da concepção à produção, por designers.</p>
+        </div>
+        <div class="by">
+          <b>Carolina Zamprônio</b>
+          <span>Product Designer · IA aplicada a produto · iFood · 2026</span>
+        </div>
+        <div class="figcursor" id="figcursor" aria-hidden="true">
+          <svg width="17" height="19" viewBox="0 0 17 19" fill="none">
+            <path d="M1.2 1.1 L1.2 15.4 L5.1 11.7 L7.7 17.2 L10.6 15.8 L8 10.4 L13.6 10.2 Z"
+                  fill="#ff3e9a" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+          <span class="pill">Carol</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · CONTEXTO -->
+    <section class="slide" data-t="O contexto">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">O contexto</p>
+          <h2>Ninguém vende antes de terminar o setup</h2>
+          <p class="lede">Todo parceiro novo do iFood passa por um portal de ativação. São seis etapas obrigatórias, cerca de 40 minutos de configuração, antes da loja ir ao ar.</p>
+          <div class="chips">
+            <span class="chip">Pagamento · 1 min</span>
+            <span class="chip">Entrega · 10 min</span>
+            <span class="chip">Horário · 5 min</span>
+            <span class="chip">Minha loja · 5 min</span>
+            <span class="chip">Financeiro · 10 min</span>
+            <span class="chip">Cardápio · 10 min</span>
+            <span class="chip lime">Conclusão</span>
+          </div>
+        </div>
+        <figure class="media panel blue">
+          <div class="bleedbox"><video poster="/projetos/diana/portal-poster.jpg" muted loop playsinline preload="metadata"><source src="/projetos/diana/portal.mp4" type="video/mp4"><source src="/projetos/diana/portal.webm" type="video/webm"></video></div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 3 · PROBLEMA -->
+    <section class="slide" data-t="O problema">
+      <div class="wrap">
+        <p class="eyebrow">O problema</p>
+        <h2 class="wide">E, quando travava, ele travava sozinho</h2>
+        <div class="cols" style="margin-top:26px">
+          <div class="card">
+            <p class="who">Evidência qualitativa</p>
+            <h3>A mesma dor, pesquisa após pesquisa</h3>
+            <p>Entrevistas e forms recorrentes no produto apontavam falta de suporte durante a ativação.</p>
+          </div>
+          <div class="card">
+            <p class="who">O que o portal oferecia</p>
+            <h3>Um FAQ estático</h3>
+            <p>Perguntas frequentes no rodapé da tela. Nenhum canal para tirar dúvida no momento em que ela aparece.</p>
+          </div>
+          <div class="card on-lime">
+            <p class="who">Volume desatendido</p>
+            <h3>17.258 sessões web</h3>
+            <p>Entre janeiro e março de 2026, sem nenhuma ajuda em tempo real no caminho.</p>
+          </div>
+        </div>
+        <p class="note"><strong>A leitura:</strong> o parceiro não desistia por falta de vontade. Ele parava numa dúvida que ninguém estava lá para responder.</p>
+      </div>
+    </section>
+
+    <!-- 4 · OPORTUNIDADE -->
+    <section class="slide" data-t="A oportunidade">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">A oportunidade</p>
+          <h2>A ajuda já existia. Só não estava onde a dúvida acontecia.</h2>
+          <p class="lede">A <strong>Diana</strong> é o agente de onboarding do iFood. Ela já funcionava como canal autônomo de captação e cadastro, e também respondia dúvidas sobre a plataforma.</p>
+          <ul class="ticks pink tight">
+            <li>Tudo isso acontecia <strong>só pelo WhatsApp</strong>, fora do fluxo de quem estava configurando a loja</li>
+            <li>Quem estava no portal, no meio do setup, não alcançava nada disso</li>
+          </ul>
+        </div>
+        <figure class="media">
+          <div class="waphone" role="img" aria-label="Conversa no WhatsApp: a Diana se apresenta, o parceiro pede ajuda para montar o cardápio e ela se oferece para dar o suporte">
+            <div class="wahead">
+              <span class="bk">&#8249;</span>
+              <img src="/p/17dfxbnk/diana-av.png" alt="">
+              <span class="wanm"><b>Diana &#183; iFood <i class="vfy">&#10003;</i></b><span>online</span></span>
+            </div>
+            <div class="wabody">
+              <div class="wab in">Oi, tudo bem? Aqui é a Diana do iFood. Como posso te ajudar?<i>11:14</i></div>
+              <div class="wab out">Estou com dúvidas para conseguir montar o meu cardápio. Você pode me ajudar com isso?<i>11:15</i></div>
+              <div class="wab in">Claro, consigo sim. Pode me contar qual é a sua dúvida, que eu vou te dar o suporte necessário.<i>11:16</i></div>
+            </div>
+            <div class="wafoot"><span>Mensagem</span><em>&#8593;</em></div>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 5 · HIPÓTESE -->
+    <section class="slide" data-t="A hipótese">
+      <div class="wrap">
+        <p class="eyebrow">A hipótese</p>
+        <p class="big">Se a inteligência da Diana estivesse <span class="mark">dentro do portal,</span> o parceiro resolveria a dúvida sem sair do fluxo e chegaria ao primeiro pedido mais rápido e com mais qualidade.</p>
+        <p class="note purple"><strong>O obstáculo:</strong> pelo roadmap normal levaria meses para entrar na fila de desenvolvimento, e exigiria alinhar a prioridade de dois times. O portal e a Diana são times separados, com backlogs próprios.</p>
+      </div>
+    </section>
+
+    <!-- 6 · APOSTA -->
+    <section class="slide" data-t="A aposta">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">A aposta do time</p>
+          <h2>Total Football</h2>
+          <p class="lede">Na <strong>Vibe Coding Week</strong>, o time testou uma ideia: com IA, o mesmo profissional atua em mais de uma área sem perder a profundidade da sua especialidade.</p>
+          <p class="lede">Para mim não era experimento novo. Eu já vinha subindo código no produto, adequando componentes ao design system e ajustando conteúdo direto na interface.</p>
+          <p class="hand" style="margin-top:16px">a semana só abriu espaço para ir mais longe</p>
+        </div>
+        <figure class="media"><video class="vid" poster="/p/17dfxbnk/campo-poster.jpg" muted loop playsinline preload="metadata"><source src="/p/17dfxbnk/campo.mp4" type="video/mp4"><source src="/p/17dfxbnk/campo.webm" type="video/webm"></video></figure>
+      </div>
+    </section>
+
+    <!-- 7 · ARQUITETURA -->
+    <section class="slide" data-t="Arquitetura">
+      <div class="wrap wide-wrap">
+        <div class="archead">
+          <div>
+            <p class="eyebrow">Antes de construir</p>
+            <h2 class="wide">Entender a arquitetura com quem a construiu</h2>
+          </div>
+        </div>
+
+        <div class="flowbox">
+          <button class="replay" id="flowReplay" type="button">Repetir</button>
+          <figure class="wbover">
+            <img src="/p/17dfxbnk/whiteboard.jpg" alt="Quadro branco com o desenho do fluxo entre portal, Kong e Diana">
+            <figcaption>O quadro onde desenhamos</figcaption>
+          </figure>
+          <svg class="flow" id="flow" viewBox="0 0 1000 365" role="img"
+               aria-label="Fluxo da mensagem: do webchat no portal, pelo gateway Kong, até o agent graph da Diana e de volta como resposta síncrona">
+            <defs>
+              <marker id="ah" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#703ffe"/>
+              </marker>
+            </defs>
+
+            <!-- molduras -->
+            <text class="zt" x="80" y="60" text-anchor="middle">PORTAL</text>
+            <rect x="10" y="72" width="140" height="150" rx="16" fill="#fff" stroke="#e4e4e8"/>
+            <text class="sm" x="80" y="208">webchat no setup</text>
+
+            <line x1="190" y1="36" x2="190" y2="300" stroke="#c6f432" stroke-width="3" stroke-linecap="round"/>
+            <text class="zt" x="190" y="28" text-anchor="middle">KONG</text>
+            <text class="sm" x="190" y="316">gateway</text>
+
+            <rect x="225" y="45" width="760" height="255" rx="18" fill="none" stroke="#e4e4e8" stroke-dasharray="4 4"/>
+            <text class="zt" x="245" y="38" text-anchor="start">DIANA &#183; agent graph</text>
+
+            <!-- balões do chat -->
+            <g class="bub" id="b-user">
+              <rect x="50" y="92" width="84" height="26" rx="9" fill="#703ffe"/>
+              <text x="92" y="109" class="nl" style="fill:#fff;font-size:10.5px">pergunta</text>
+            </g>
+            <g class="bub" id="b-bot">
+              <rect x="22" y="158" width="100" height="30" rx="9" fill="#f1f2f4" stroke="#e4e4e8"/>
+              <text x="72" y="177" class="nl" style="font-size:10.5px">resposta</text>
+            </g>
+
+            <!-- ligações -->
+            <path class="ln" id="l1" pathLength="1" d="M150,130 L236,130"/>
+            <path class="ln" id="l2" pathLength="1" d="M355,130 L369,130"/>
+            <path class="ln" id="l3" pathLength="1" d="M448,130 L461,130"/>
+            <path class="ln" id="l4" pathLength="1" d="M590,130 L603,130"/>
+            <path class="ln" id="l5" pathLength="1" d="M734,130 L785,130"/>
+            <path class="ln" id="l6" pathLength="1" d="M892,130 L905,130"/>
+            <path class="ln" id="l7" pathLength="1" d="M944,150 L944,318 Q944,332 930,332 L94,332 Q80,332 80,318 L80,230"/>
+            <path class="gh" id="g1" d="M672,148 C672,190 668,236 704,236"/>
+            <path class="gh" id="g2" d="M810,236 C842,236 842,195 842,148"/>
+
+            <!-- nós -->
+            <g class="nd" id="n-api">
+              <rect x="243" y="112" width="112" height="36" rx="10"/>
+              <text x="299" y="135" class="nl mono">/v1/message</text>
+            </g>
+            <g class="nd" id="n-start">
+              <rect x="376" y="112" width="72" height="36" rx="10"/>
+              <text x="412" y="135" class="nl">start</text>
+            </g>
+            <g class="nd" id="n-enr">
+              <rect x="468" y="112" width="122" height="36" rx="10"/>
+              <text x="529" y="135" class="nl">enrichment</text>
+            </g>
+            <g class="nd key" id="n-sup">
+              <rect x="610" y="112" width="124" height="36" rx="10"/>
+              <text x="672" y="135" class="nl">supervisor</text>
+            </g>
+            <g class="nd" id="n-rev">
+              <rect x="792" y="112" width="100" height="36" rx="10"/>
+              <text x="842" y="135" class="nl">revisor</text>
+            </g>
+            <g class="nd" id="n-end">
+              <rect x="912" y="112" width="64" height="36" rx="10"/>
+              <text x="944" y="135" class="nl">end</text>
+            </g>
+
+            <!-- ramo whatsapp -->
+            <g class="grp" id="n-spec">
+              <rect x="700" y="210" width="114" height="60" rx="12" fill="#fafbfc" stroke="#e4e4e8"/>
+              <text x="729" y="232" class="sm">auth</text>
+              <text x="786" y="232" class="sm">faq</text>
+              <text x="729" y="254" class="sm">menu</text>
+              <text x="786" y="254" class="sm">perfil</text>
+              <text x="757" y="288" class="sm">agentes especializados</text>
+            </g>
+
+            <!-- decisão -->
+            <g class="lb" id="t-badge">
+              <rect x="606" y="78" width="132" height="24" rx="12" fill="#c6f432"/>
+              <text x="672" y="94" class="nl" style="font-size:11px">canal = portal</text>
+            </g>
+
+            <!-- rótulos -->
+            <text class="sm lb" id="t-post" x="167" y="120" style="font-weight:600;fill:#151515">POST</text>
+            <text class="sm lb" id="t-meta" x="299" y="167">sessionId &#183; mensagem &#183; canal</text>
+            <text class="sm lb" id="t-ret" x="512" y="324">chat completion &#183; resposta s&#237;ncrona</text>
+
+            <!-- legenda -->
+            <g class="lb on">
+              <line x1="14" y1="250" x2="36" y2="250" stroke="#703ffe" stroke-width="2.5" stroke-linecap="round"/>
+              <text class="sm start" x="42" y="254">fluxo do portal</text>
+              <line x1="14" y1="272" x2="36" y2="272" stroke="#b9bcc4" stroke-width="2" stroke-dasharray="5 4"/>
+              <text class="sm start" x="42" y="276">fluxo do WhatsApp</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="arcfoot">
+          <div><strong>O recorte</strong><span>S&#243; a funcionalidade de tirar d&#250;vidas foi para o portal, n&#227;o a Diana inteira.</span></div>
+          <div><strong>A decis&#227;o</strong><span>O mesmo endpoint do WhatsApp, com roteamento por canal no supervisor.</span></div>
+          <div><strong>O custo</strong><span>Cerca de 15 linhas no core, retrocompat&#237;vel e coberto por testes.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 · PROCESSO 01 -->
+    <section class="slide" data-t="01 · Figma">
+      <div class="wrap stack">
+        <div class="shead">
+          <p class="eyebrow">Meu processo</p>
+          <div class="tline">
+            <div class="tstep on"><span class="tn">01</span><span class="tl">Esboço no Figma</span><p class="td">Estados, hierarquia e comportamento definidos antes de qualquer linha de código. É aqui que eu decido o que o componente precisa fazer.</p></div>
+            <div class="tstep"><span class="tn">02</span><span class="tl">Tradução no Claude Code</span></div>
+            <div class="tstep"><span class="tn">03</span><span class="tl">Refino das microinterações</span></div>
+          </div>
+        </div>
+        <div class="sbody">
+          <figure class="media panel violet shotv">
+            <video poster="/projetos/diana/figma-poster.jpg" muted loop playsinline preload="metadata"><source src="/projetos/diana/figma.mp4" type="video/mp4"><source src="/projetos/diana/figma.webm" type="video/webm"></video>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9 · PROCESSO 02 -->
+    <section class="slide" data-t="02 · Claude Code">
+      <div class="wrap stack">
+        <div class="shead">
+          <p class="eyebrow">Meu processo</p>
+          <div class="tline">
+            <div class="tstep"><span class="tn">01</span><span class="tl">Esboço no Figma</span></div>
+            <div class="tstep on"><span class="tn">02</span><span class="tl">Tradução no Claude Code</span><p class="td">O esboço vira contexto. O componente nasce dentro dos padrões do repositório, lendo a documentação que o próprio time escreveu.</p></div>
+            <div class="tstep"><span class="tn">03</span><span class="tl">Refino das microinterações</span></div>
+          </div>
+        </div>
+        <div class="sbody">
+          <div class="mock">
+            <div class="mwin dark">
+              <div class="mbar"><i></i><i></i><i></i><span>claude code · diana-agent-squad</span></div>
+              <div class="tbody">
+                <p class="tprompt"><b>&gt;</b><span class="ttype">criar o webchat a partir do frame do Figma</span></p>
+                <p class="tln sq" style="animation-delay:1.7s"><em>Read</em> docs/PORTAL_API_CONTRACT.md</p>
+                <p class="tln sq" style="animation-delay:2.1s"><em>Write</em> WebChat.tsx <s>+128</s></p>
+                <p class="tln sq" style="animation-delay:2.5s"><em>Edit</em> ChatLauncher.tsx <s>+34</s></p>
+                <p class="tln sq" style="animation-delay:2.9s"><em>Edit</em> tokens.css <s>+12</s></p>
+                <p class="tln sq" style="animation-delay:3.4s"><em>Bash</em> npm run build <s class="ok">✓ sem erros</s></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 · PROCESSO 03 -->
+    <section class="slide" data-t="03 · Microinterações">
+      <div class="wrap stack">
+        <div class="shead">
+          <p class="eyebrow">Meu processo</p>
+          <div class="tline">
+            <div class="tstep"><span class="tn">01</span><span class="tl">Esboço no Figma</span></div>
+            <div class="tstep"><span class="tn">02</span><span class="tl">Tradução no Claude Code</span></div>
+            <div class="tstep on"><span class="tn">03</span><span class="tl">Refino das microinterações</span><p class="td">Transição, brilho e resposta ao hover, ajustados iteração a iteração até o gesto parecer natural.</p></div>
+          </div>
+        </div>
+        <div class="sbody">
+          <div class="mock">
+            <div class="mwin">
+              <div class="mbar"><i></i><i></i><i></i><span>estados do launcher</span></div>
+              <div class="ubody">
+                <div class="ustage">
+                  <div class="lnch"><b class="q">?</b><span class="lav"></span></div>
+                  <p class="ustate"><span>repouso</span><span>hover</span><span>aberto</span></p>
+                </div>
+                <div class="props">
+                  <div class="prow"><span>duração</span><b>240 ms</b></div>
+                  <div class="prow"><span>escala</span><b>1 → 1,07</b></div>
+                  <div class="prow"><span>brilho</span><b>0 → 100%</b></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 · QUEM FEZ O QUÊ -->
+    <section class="slide" data-t="Quem fez o quê">
+      <div class="wrap">
+        <p class="eyebrow">Divisão do trabalho</p>
+        <h2 class="wide">Quem fez o quê</h2>
+        <div class="cols">
+          <div class="card on-lime">
+            <p class="who">Eu</p>
+            <h3>Front-end, design e microinterações</h3>
+            <p>A interface do webchat e o comportamento de cada estado, codados com Claude Code.</p>
+          </div>
+          <div class="card">
+            <p class="who">Outro designer</p>
+            <h3>Back-end</h3>
+            <p>Roteamento por canal e o contrato de API para o time do portal.</p>
+          </div>
+          <div class="card on-mist">
+            <p class="who">Engenharia</p>
+            <h3>Revisão e a rota no Kong</h3>
+            <p>A camada de gateway, mais delicada, ficou com quem tem a profundidade para isso.</p>
+          </div>
+        </div>
+        <div class="rail">
+          <div class="step done"><p class="d">Dia 1</p><p>Entender a arquitetura com os devs</p></div>
+          <div class="step done"><p class="d">Dias 2 a 4</p><p>Construir front e back, abrir os MRs</p></div>
+          <div class="step done"><p class="d">Dia 5</p><p>MVP rodando internamente, já usável</p></div>
+          <div class="step"><p class="d">Depois</p><p>Iterações e ajustes finos da engenharia</p></div>
+        </div>
+        <p class="note"><strong>O que foi inédito:</strong> eu já abria merge request antes, mas em ajustes pontuais no produto existente. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.</p>
+      </div>
+    </section>
+
+    <!-- 12 · O GESTO -->
+    <section class="slide dark" data-t="O gesto">
+      <div class="wrap">
+        <p class="eyebrow">A solução começa aqui</p>
+        <div class="iconstage">
+          <video poster="/projetos/diana/icone-poster.jpg" muted loop playsinline preload="metadata">
+            <source src="/projetos/diana/icone.mp4" type="video/mp4">
+            <source src="/projetos/diana/icone.webm" type="video/webm">
+          </video>
+        </div>
+        <p class="darkline">Tem alguém ali, não um FAQ</p>
+        <p class="darksub">O ícone de dúvida vira a Diana quando o mouse se aproxima. É o convite, antes de qualquer conversa.</p>
+      </div>
+    </section>
+
+    <!-- 13 · SOLUÇÃO -->
+    <section class="slide" data-t="A solução">
+      <div class="wrap split">
+        <div>
+          <p class="eyebrow">A solução</p>
+          <h2>Diana consultora, dentro do setup</h2>
+          <ul class="ticks tight">
+            <li>O ícone de ajuda <strong>vira a Diana</strong> quando o parceiro passa o mouse</li>
+            <li><strong>Quick questions por etapa:</strong> no financeiro ela sugere perguntas de financeiro, no cardápio sugere perguntas de cardápio</li>
+            <li>A mesma base do WhatsApp, agora com resposta <strong>síncrona</strong> e adaptada ao portal</li>
+          </ul>
+        </div>
+        <div class="media">
+          <div class="devices">
+            <div class="screen"><video poster="/projetos/diana/diana-desktop-poster.jpg" muted loop playsinline preload="metadata"><source src="/projetos/diana/diana-desktop.mp4" type="video/mp4"><source src="/projetos/diana/diana-desktop.webm" type="video/webm"></video></div>
+            <div class="handset"><video poster="/projetos/diana/diana-mobile-poster.jpg" muted loop playsinline preload="metadata"><source src="/projetos/diana/diana-mobile.mp4" type="video/mp4"><source src="/projetos/diana/diana-mobile.webm" type="video/webm"></video></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 · QUALIDADE -->
+    <section class="slide" data-t="Qualidade">
+      <div class="wrap split text-right">
+        <div>
+          <p class="eyebrow">Antes do usuário real</p>
+          <h2>Testamos com usuários sintéticos</h2>
+          <ul class="ticks purple tight">
+            <li>Quatro <strong>personas sintéticas</strong>, do dono tradicional que nunca usou IA ao jovem nativo digital, construídas pelo <strong>time de dados</strong>, também na Vibe Coding Week</li>
+            <li>Cada uma conversando com a Diana em cenários reais de setup</li>
+            <li>Um <strong>agente avaliador</strong> pontuando turno a turno: objetivo cumprido, eficiência, classificação</li>
+            <li>As falhas viraram backlog antes de qualquer parceiro de verdade ver a tela</li>
+          </ul>
+        </div>
+        <figure class="media scard">
+          <div>
+            <div class="scwin" role="table" aria-label="Scorecard das quatro conversas avaliadas">
+              <div class="scrow schead" role="row">
+                <span class="sccen">Cenário</span>
+                <span>Turnos</span>
+                <span>Juiz LLM</span>
+                <span>Eficiência</span>
+                <span>Classificação</span>
+                <span>Veredicto</span>
+              </div>
+              <div class="scrow ok" role="row">
+                <span class="sccen">Definir horários</span>
+                <span>7</span>
+                <span class="sc"><b>1,0</b><i style="--v:100%"></i></span>
+                <span class="sc low"><b>0,44</b><i style="--v:44%"></i></span>
+                <span class="sc"><b>1,0</b><i style="--v:100%"></i></span>
+                <span class="scv ok">aprovado</span>
+              </div>
+              <div class="scrow ok" role="row">
+                <span class="sccen">Adicionar itens · Drop Burger</span>
+                <span>7</span>
+                <span class="sc"><b>1,0</b><i style="--v:100%"></i></span>
+                <span class="sc"><b>0,83</b><i style="--v:83%"></i></span>
+                <span class="sc"><b>1,0</b><i style="--v:100%"></i></span>
+                <span class="scv ok">aprovado</span>
+              </div>
+              <div class="scrow no" role="row">
+                <span class="sccen">Criar cardápio do zero</span>
+                <span>20</span>
+                <span class="sc mid"><b>0,6</b><i style="--v:60%"></i></span>
+                <span class="sc low"><b>0,00</b><i style="--v:2%"></i></span>
+                <span class="sc mid"><b>0,5</b><i style="--v:50%"></i></span>
+                <span class="scv no">reprovado</span>
+              </div>
+              <div class="scrow half" role="row">
+                <span class="sccen">Adicionar itens · Sabor Carioca</span>
+                <span>8</span>
+                <span class="sc mid"><b>0,8</b><i style="--v:80%"></i></span>
+                <span class="sc mid"><b>0,67</b><i style="--v:67%"></i></span>
+                <span class="sc mid"><b>0,5</b><i style="--v:50%"></i></span>
+                <span class="scv half">parcial</span>
+              </div>
+            </div>
+            <p class="sccap">Scorecard do agente avaliador · quatro cenários, turno a turno</p>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 15 · RESULTADOS -->
+    <section class="slide" data-t="Resultados">
+      <div class="wrap">
+        <p class="eyebrow">Resultados · teste A/B, base crescente (30/30 → 50/50) · 26.08 a 21.09</p>
+        <h2 class="wide">Um setup com mais qualidade leva o parceiro à primeira venda</h2>
+        <div class="stats two">
+          <div class="stat up">
+            <p class="k">Ativado → 1º pedido</p>
+            <p class="v"><span class="num" data-to="1.60" data-dec="2" data-pre="+">+1,60</span> <small>p.p.</small></p>
+            <p class="n">51,00% para 52,68%</p>
+          </div>
+          <div class="stat hero">
+            <p class="k">Impacto absoluto</p>
+            <p class="v"><span class="num" data-to="100" data-dec="0" data-pre="~">~100</span></p>
+            <p class="n">primeiros pedidos incrementais no período</p>
+          </div>
+        </div>
+        <p class="lede" style="margin-top:20px">O que mudou foi a <strong>qualidade</strong> do setup, e isso apareceu na etapa seguinte: mais parceiros chegando à primeira venda.</p>
+      </div>
+    </section>
+
+    <!-- 16 · APRENDIZADOS -->
+    <section class="slide" data-t="Aprendizados">
+      <div class="wrap">
+        <p class="eyebrow">O que eu tirei disso</p>
+        <h2 class="wide">Aprendizados</h2>
+        <div class="cols-2" style="margin-top:22px">
+          <div class="card">
+            <h3>A fronteira ficou invisível, a profundidade não</h3>
+            <p>Consigo construir e subir código. A rota no Kong continua sendo da engenharia, e saber onde eu paro é parte do trabalho.</p>
+          </div>
+          <div class="card">
+            <h3>Qualidade de código com IA não se garante na revisão</h3>
+            <p>Tiramos as boas práticas da cabeça dos devs e viramos documentação. Quem entrou depois no time herdou o padrão.</p>
+          </div>
+          <div class="card">
+            <h3>O gargalo migrou</h3>
+            <p>Antes o difícil era construir. Agora é decidir o que vale construir, e isso continua sendo decisão de produto e design.</p>
+          </div>
+          <div class="card on-lime">
+            <h3>Dois times, um atalho</h3>
+            <p>O que destravou não foi só a ferramenta. Foi conseguir provar a hipótese sem disputar a prioridade de dois backlogs.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 17 · COMO EU USO IA -->
+    <section class="slide" data-t="Como eu uso IA">
+      <div class="wrap">
+        <p class="eyebrow">Não foi um projeto isolado</p>
+        <h2 class="wide">Como a IA entrou no meu dia a dia</h2>
+        <div class="cols" style="margin-top:22px">
+          <div class="card">
+            <p class="who">No produto</p>
+            <h3>Design system direto no código</h3>
+            <p>Reformulei os componentes do nosso produto atualizando o design system, com ganhos medidos em conversão sem mudar a jornada.</p>
+            <p>A Diana no portal nasceu daí.</p>
+          </div>
+          <div class="card on-lime">
+            <p class="who">No time</p>
+            <h3>Guilda de IA e workshop</h3>
+            <p>Toco a guilda de IA do time de parceiros, com cerca de 15 designers.</p>
+            <p>No workshop que conduzi, todos abriram o primeiro merge request com um componente.</p>
+          </div>
+          <div class="card on-mist">
+            <p class="who">Fora do trabalho</p>
+            <h3>Construo o que eu preciso</h3>
+            <p>Criei meus próprios aplicativos para organização e acompanhamento de desempenho.</p>
+            <p>É onde eu testo ferramenta nova antes de levar para o time.</p>
+          </div>
+        </div>
+        <p class="eyebrow" style="margin:24px 0 10px">Ferramentas no dia a dia</p>
+        <div class="tools">
+          <span class="tool"><i class="logo"><img src="/stickers/claudecode.svg" alt=""></i>Claude Code</span>
+          <span class="tool"><i class="logo"><img src="/stickers/claude.svg" alt=""></i>Claude</span>
+          <span class="tool"><i style="background:#0098ff">VS</i>VS Code</span>
+          <span class="tool"><i class="logo"><img src="/stickers/wispr.svg" alt=""></i>Wispr Flow</span>
+          <span class="tool"><i class="logo"><img src="/stickers/figma.svg" alt=""></i>Figma</span>
+          <span class="tool"><i class="logo"><img src="/stickers/vercel.svg" alt=""></i>Vercel</span>
+          <span class="tool"><i class="logo"><img src="/stickers/gitlab.svg" alt=""></i>GitLab</span>
+          <span class="tool"><i class="logo"><img src="/stickers/supabase.svg" alt=""></i>Supabase</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="bar">
+    <span class="title" id="slideTitle">Capa</span>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <span class="count" id="count">1 / 17</span>
+    <div class="nav">
+      <button id="prev" aria-label="Slide anterior">&#8592;</button>
+      <button id="next" aria-label="Próximo slide">&#8594;</button>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0, mobile = false;
+  var fill = document.getElementById('fill'),
+      count = document.getElementById('count'),
+      titleEl = document.getElementById('slideTitle'),
+      prev = document.getElementById('prev'),
+      next = document.getElementById('next');
+
+  function checkMobile(){ mobile = window.matchMedia('(max-width:760px)').matches; }
+
+  function show(n){
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function(s, k){ s.hidden = (k !== i); });
+    fill.style.width = ((i + 1) / slides.length * 100) + '%';
+    count.textContent = (i + 1) + ' / ' + slides.length;
+    titleEl.textContent = slides[i].dataset.t || '';
+    prev.disabled = (i === 0);
+    next.disabled = (i === slides.length - 1);
+    slides.forEach(function(s, k){
+      s.querySelectorAll('video').forEach(function(v){
+        try { if (k === i) { var pr = v.play(); if (pr) pr.catch(function(){}); } else { v.pause(); } } catch(e){}
+      });
+    });
+    if (slides[i].querySelector('#flow')) { flowPlay(); } else { flowStop(); }
+    if (slides[i].classList.contains('cover')) { coverPlay(); } else { coverStop(); }
+    countUp(slides[i]);
+    fitMedia(slides[i]);
+    if (!mobile) { try { slides[i].scrollTop = 0; } catch(e){} }
+  }
+
+  // ---- capa: cursor do Figma ----
+  var coverT = [];
+  var COVER_CLS = ['anim','c1','c2','c3','c4','c5','c6','c7','c8','c9'];
+
+  function coverStop(){ coverT.forEach(clearTimeout); coverT = []; }
+
+  function coverPlay(){
+    var cover = document.querySelector('.slide.cover');
+    if (!cover) return;
+    var wrap = cover.querySelector('.wrap'),
+        framed = cover.querySelector('#framed'),
+        cur = cover.querySelector('#figcursor'),
+        hl = cover.querySelector('.hlp');
+    if (!wrap || !framed || !cur) return;
+
+    coverStop();
+    COVER_CLS.forEach(function(c){ cover.classList.remove(c); });
+
+    if (reduced || mobile) { cover.classList.add('c1','c2','c3','c4','c5','c6','c7','c8'); return; }
+
+    var PAD = 26;
+    function at(x, y){ cur.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)'; }
+    function corners(){
+      var wr = wrap.getBoundingClientRect(), fr = framed.getBoundingClientRect();
+      return {
+        tl: [fr.left - wr.left - PAD, fr.top - wr.top - PAD],
+        br: [fr.right - wr.left + PAD - 6, fr.bottom - wr.top + PAD - 8],
+        mid: [fr.right - wr.left - 90, fr.bottom - wr.top + 10],
+        hl: hl ? (function(){
+              var hr = hl.getBoundingClientRect();
+              return [hr.left - wr.left - 12, hr.bottom - wr.top - 16];
+            })() : [0, 0],
+        tag: (function(){
+              var tg = cover.querySelector('.tag');
+              if (!tg) return [0, 0];
+              var tr = tg.getBoundingClientRect();
+              return [tr.left - wr.left - 10, tr.bottom - wr.top - 14];
+            })()
+      };
+    }
+
+    var tws = cover.querySelectorAll('.tw');
+    tws.forEach(function(el){ el.style.setProperty('--w', (el.scrollWidth + 5) + 'px'); });
+
+    cover.classList.add('anim');
+    var c = corners();
+    cur.style.transition = 'none';
+    at(c.mid[0], c.mid[1]);
+    void cur.offsetWidth;
+    cur.style.transition = '';
+
+    coverT.push(setTimeout(function(){
+      cover.classList.add('c1');
+      at(corners().tl[0], corners().tl[1]);
+    }, 240));
+    coverT.push(setTimeout(function(){
+      cover.classList.add('c2');
+      at(corners().br[0], corners().br[1]);
+    }, 900));
+    coverT.push(setTimeout(function(){ cover.classList.add('c3'); }, 1620));
+    coverT.push(setTimeout(function(){ cover.classList.add('c4'); }, 1900));
+    coverT.push(setTimeout(function(){ var q = corners(); at(q.hl[0], q.hl[1]); }, 2900));
+    coverT.push(setTimeout(function(){ cover.classList.add('c5'); }, 3250));
+    coverT.push(setTimeout(function(){ cover.classList.add('c6'); }, 4000));
+    coverT.push(setTimeout(function(){ var q = corners(); at(q.tag[0], q.tag[1]); }, 4420));
+    coverT.push(setTimeout(function(){ cover.classList.add('c7'); }, 4760));
+    coverT.push(setTimeout(function(){ cover.classList.add('c8'); }, 5480));
+    coverT.push(setTimeout(function(){ cover.classList.add('c9'); }, 6050));
+  }
+
+  // ---- a mídia ocupa exatamente a faixa livre do slide ----
+  function fitMedia(slide){
+    if (mobile) return;
+    var wrap = slide.querySelector('.wrap.stack');
+    var sb = slide.querySelector('.sbody');
+    if (!wrap || !sb) return;
+    requestAnimationFrame(function(){
+      // desconta o acolchoamento e deixa um respiro visível em cima e embaixo
+      var h = Math.floor(sb.getBoundingClientRect().height) - 46;
+      if (h > 120) wrap.style.setProperty('--mediaH', h + 'px');
+    });
+  }
+
+  // ---- contagem dos números ----
+  function countUp(slide){
+    var els = slide.querySelectorAll('.num');
+    if (!els.length) return;
+    els.forEach(function(el){
+      var to = parseFloat(el.dataset.to), dec = parseInt(el.dataset.dec, 10), pre = el.dataset.pre || '';
+      function fmt(v){ return pre + v.toFixed(dec).replace('.', ','); }
+      if (reduced) { el.textContent = fmt(to); return; }
+      var t0 = null, dur = 900;
+      function tick(ts){
+        if (t0 === null) t0 = ts;
+        var k = Math.min(1, (ts - t0) / dur);
+        el.textContent = fmt(to * (1 - Math.pow(1 - k, 3)));
+        if (k < 1) requestAnimationFrame(tick);
+      }
+      el.textContent = fmt(0);
+      requestAnimationFrame(tick);
+    });
+  }
+
+  // ---- fluxo animado da arquitetura ----
+  var flowTimers = [], flowLoop = null;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FLOW = [
+    [200,  ['b-user']],
+    [700,  ['l1','t-post']],
+    [1350, ['n-api','t-meta']],
+    [1750, ['l2']],
+    [2050, ['n-start']],
+    [2350, ['l3']],
+    [2700, ['n-enr']],
+    [3000, ['l4']],
+    [3350, ['n-sup']],
+    [3850, ['t-badge']],
+    [4300, ['l5','g1','g2','n-spec']],
+    [4950, ['n-rev']],
+    [5250, ['l6']],
+    [5550, ['n-end']],
+    [5950, ['l7','t-ret']],
+    [7000, ['b-bot']]
+  ];
+
+  function flowClear(){
+    flowTimers.forEach(clearTimeout); flowTimers = [];
+    if (flowLoop) { clearTimeout(flowLoop); flowLoop = null; }
+  }
+  function flowReset(){
+    var svg = document.getElementById('flow');
+    if (!svg) return;
+    svg.querySelectorAll('.ln,.gh,.lb,.bub,.nd,.grp').forEach(function(el){
+      if (!el.closest('g.lb.on') && !el.classList.contains('on')) return;
+      el.classList.remove('on');
+    });
+    svg.querySelectorAll('[id]').forEach(function(el){ el.classList.remove('on'); });
+    svg.querySelectorAll('g.lb:not([id])').forEach(function(el){ el.classList.add('on'); });
+  }
+  function flowFinal(){
+    var svg = document.getElementById('flow');
+    if (!svg) return;
+    FLOW.forEach(function(stepPair){
+      stepPair[1].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.classList.add('on');
+      });
+    });
+  }
+  function flowPlay(){
+    var svg = document.getElementById('flow');
+    if (!svg) return;
+    flowClear(); flowReset();
+    if (reduced) { flowFinal(); return; }
+    FLOW.forEach(function(stepPair){
+      flowTimers.push(setTimeout(function(){
+        stepPair[1].forEach(function(id){
+          var el = document.getElementById(id);
+          if (el) el.classList.add('on');
+        });
+      }, stepPair[0]));
+    });
+    flowLoop = setTimeout(flowPlay, 10500);
+  }
+  function flowStop(){ flowClear(); }
+
+  var replayBtn = document.getElementById('flowReplay');
+  if (replayBtn) replayBtn.addEventListener('click', flowPlay);
+
+  function go(d){ if (mobile) return; show(i + d); }
+
+  prev.addEventListener('click', function(){ go(-1); });
+  next.addEventListener('click', function(){ go(1); });
+  document.addEventListener('keydown', function(e){
+    if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); go(1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); go(-1); }
+    else if (k === 'Home') { e.preventDefault(); show(0); }
+    else if (k === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+
+  var x0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (x0 === null || mobile) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 55) go(dx < 0 ? 1 : -1);
+    x0 = null;
+  }, {passive:true});
+
+  window.addEventListener('resize', function(){
+    var was = mobile;
+    checkMobile();
+    if (!mobile && slides[i]) {
+      var w = slides[i].querySelector('.wrap.stack');
+      if (w) { w.style.removeProperty('--mediaH'); fitMedia(slides[i]); }
+    }
+    if (was !== mobile) {
+      if (mobile) { slides.forEach(function(s){ s.hidden = false; }); }
+      else { show(i); }
+    }
+  });
+
+  checkMobile();
+  if (mobile) { slides.forEach(function(s){ s.hidden = false; }); flowFinal(); coverPlay(); }
+  else { show(0); }
+})();
+</script>
+</html>
