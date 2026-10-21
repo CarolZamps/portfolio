@@ -326,8 +326,8 @@ export const projects: Project[] = [
           "A Diana conversando com um parceiro dentro do portal, no desktop e no celular",
           1040,
           874,
-          [641, 520, "var(--color-note-3)", 130, 60, 560, 470.6],
-          { video: "diana-mobile", alt: "A mesma conversa no celular", x: 34, y: 150, w: 150, h: 308 },
+          [641, 520, "var(--color-note-3)", 112, 50, 500, 420.4],
+          { video: "diana-mobile", alt: "A mesma conversa no celular", x: 22, y: 150, w: 150, h: 308 },
         ),
       },
       {
