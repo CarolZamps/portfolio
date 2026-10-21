@@ -109,21 +109,23 @@ export function Solution({ block }: { block: SolutionBlock }) {
         </div>
       </div>
 
-      {/* palco largo: desktop e celular lado a lado, ocupando a largura toda */}
-      <div className="rounded-card bg-note-3 p-5 shadow-note md:p-10">
-        <div className="flex flex-col items-center gap-8 md:flex-row md:items-end md:justify-center md:gap-12">
-          <figure className="w-full md:w-[60%]">
-            <div className="overflow-hidden rounded-2xl bg-surface shadow-note" style={{ aspectRatio: "1040 / 874" }}>
-              <AutoVideo name={block.desktop.video} alt={block.desktop.alt} className="size-full object-cover" />
-            </div>
-            <figcaption className="mt-3 text-center font-hand text-2xl">no desktop</figcaption>
-          </figure>
-          <figure className="w-[58%] max-w-64 md:w-[24%] md:max-w-none">
-            <div className="overflow-hidden rounded-[2rem] border-[6px] border-ink bg-ink shadow-note" style={{ aspectRatio: "150 / 308" }}>
-              <AutoVideo name={block.mobile.video} alt={block.mobile.alt} className="size-full object-cover" />
-            </div>
-            <figcaption className="mt-3 text-center font-hand text-2xl">e no celular</figcaption>
-          </figure>
+      {/* palco largo e preto (como o do vídeo do ícone): o celular sobrepõe o desktop; paddings diferentes dão ar de colagem */}
+      <div
+        className="rounded-card bg-black pt-10 pr-5 pb-6 pl-6 shadow-note md:pt-16 md:pr-10 md:pb-10 md:pl-14"
+      >
+        <div className="relative">
+          <div
+            className="ml-auto w-[76%] overflow-hidden rounded-2xl bg-surface ring-1 ring-white/10 md:w-[80%]"
+            style={{ aspectRatio: "1040 / 874" }}
+          >
+            <AutoVideo name={block.desktop.video} alt={block.desktop.alt} className="size-full object-cover" />
+          </div>
+          <div
+            className="absolute bottom-0 left-0 z-10 w-[34%] overflow-hidden rounded-[1.6rem] bg-surface shadow-2xl ring-1 ring-white/20 md:w-[27%]"
+            style={{ aspectRatio: "424 / 924" }}
+          >
+            <AutoVideo name={block.mobile.video} alt={block.mobile.alt} className="size-full object-cover" />
+          </div>
         </div>
       </div>
 
