@@ -325,12 +325,11 @@ export const projects: Project[] = [
         text: [
           "A solução começa no gesto: o ícone de dúvida vira a Diana quando o mouse se aproxima. É o convite, antes de qualquer conversa.",
         ],
-        // palco largo e preto: o vídeo (fundo preto) se funde e a seção usa a largura toda
-        shot: clip("icone", "O ícone de dúvida se transforma na Diana quando o mouse se aproxima", 720, 720, [1200, 520, "#000", 340, 0, 520, 520]),
+        shot: clip("icone", "O ícone de dúvida se transforma na Diana quando o mouse se aproxima", 720, 720, [600, 600, "var(--color-ink)", 0, 0, 600, 600]),
       },
       {
         kind: "solution",
-        title: "Diana consultora, dentro do setup",
+        title: "Diana consultora,\ndentro do setup",
         text: [
           "O ícone de ajuda vira a Diana quando o parceiro passa o mouse.",
           "Quick questions por etapa: no financeiro ela sugere perguntas de financeiro, no cardápio sugere perguntas de cardápio.",
