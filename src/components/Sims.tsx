@@ -92,39 +92,28 @@ export function LauncherSim() {
   );
 }
 
-/** A Diana só existia aqui: conversa de WhatsApp, fora do portal. */
-export function WhatsAppPhone() {
+/** Esboço da hipótese: a Diana existia só no WhatsApp; e se ela estivesse dentro do portal? */
+export function HypothesisSketch() {
   return (
-    <div
-      className="wa"
-      role="img"
-      aria-label="Conversa no WhatsApp: a Diana se apresenta, o parceiro pede ajuda para montar o cardápio e ela se oferece para dar o suporte"
-    >
-      <div className="wa-head">
-        <span className="wa-back">‹</span>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/projetos/diana/diana-av.png" alt="" width={64} height={64} />
-        <span className="wa-name">
-          <b>
-            Diana · iFood <i className="wa-vfy">✓</i>
-          </b>
-          <span>online</span>
-        </span>
+    <div className="sk" role="img" aria-label="Esboço: a conversa com a Diana no WhatsApp e, abaixo, o portal de setup com o ícone de ajuda. A pergunta: e se ela estivesse aqui?">
+      <div className="sk-card">
+        <span className="sk-t">WhatsApp</span>
+        <span className="sk-b in">Oi, aqui é a Diana</span>
+        <span className="sk-b out">preciso de ajuda…</span>
       </div>
-      <div className="wa-body">
-        <div className="wa-msg in">
-          Oi, tudo bem? Aqui é a Diana do iFood. Como posso te ajudar?<i>11:14</i>
-        </div>
-        <div className="wa-msg out">
-          Estou com dúvidas para conseguir montar o meu cardápio. Você pode me ajudar com isso?<i>11:15</i>
-        </div>
-        <div className="wa-msg in">
-          Claro, consigo sim. Pode me contar qual é a sua dúvida, que eu vou te dar o suporte necessário.<i>11:16</i>
-        </div>
+      <div className="sk-arrow">
+        <svg viewBox="0 0 24 80" aria-hidden>
+          <path d="M12 2v68" strokeDasharray="6 6" />
+          <path d="M5 62l7 12 7-12" />
+        </svg>
+        <span>e se ela estivesse aqui?</span>
       </div>
-      <div className="wa-foot">
-        <span>Mensagem</span>
-        <em>↑</em>
+      <div className="sk-card portal">
+        <span className="sk-t">Portal · setup</span>
+        <i className="sk-bar w1" />
+        <i className="sk-bar w2" />
+        <i className="sk-bar w1" />
+        <span className="sk-dot">?</span>
       </div>
     </div>
   );

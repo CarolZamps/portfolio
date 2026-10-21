@@ -944,9 +944,9 @@
   flex: 1;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 0.62em;
   min-height: 0;
   padding: 1.1em 0.85em;
+  overflow: hidden;
   background-color: #e9e1d8;
   background-image: radial-gradient(rgb(21 21 21 / 0.045) 1px, transparent 1px);
   background-size: 1.7em 1.7em;
@@ -1010,4 +1010,136 @@
   font-style: normal;
   line-height: 1;
   color: #fff;
+}
+
+/* esboço da hipótese (HypothesisSketch) */
+.sk {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  max-width: 340px;
+  margin-inline: auto;
+}
+.sk-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-note);
+}
+.sk-card.portal {
+  border-color: var(--color-select);
+}
+.sk-t {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+.sk-b {
+  max-width: 88%;
+  padding: 7px 12px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+}
+.sk-b.in {
+  align-self: flex-start;
+  border-top-left-radius: 4px;
+  background: #f0f1f4;
+}
+.sk-b.out {
+  align-self: flex-end;
+  border-top-right-radius: 4px;
+  background: #dcf8c6;
+}
+.sk-bar {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: #e9eaee;
+}
+.sk-bar.w1 {
+  width: 82%;
+}
+.sk-bar.w2 {
+  width: 58%;
+}
+.sk-dot {
+  display: grid;
+  align-self: flex-end;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-ink);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 0 0 6px rgb(255 62 154 / 0.22);
+}
+.sk-arrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 92px;
+}
+.sk-arrow svg {
+  width: 24px;
+  height: 80px;
+  fill: none;
+  stroke: var(--color-cta);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.sk-arrow span {
+  font-family: var(--font-hand);
+  font-size: 1.5rem;
+  color: var(--color-ink);
+}
+
+/* "digitando…" do celular do WhatsApp */
+.wa-typing {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  width: fit-content;
+  padding: 0.8em 0.95em;
+  overflow: hidden;
+}
+.wa-typing span {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: #9b9ba2;
+  animation: wa-dot 1s ease-in-out infinite;
+}
+.wa-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.wa-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes wa-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.4;
+    transform: none;
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-0.25em);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wa-typing span {
+    animation: none;
+  }
 }

@@ -54,6 +54,8 @@ export type Stat = {
   label: string;
   sub?: string;
   count?: { to: number; decimals?: number; prefix?: string; suffix?: string };
+  /** Cor do cartão; sem isso alterna lima e rosa. */
+  tone?: "lime" | "pink" | "blue";
 };
 
 export type Step = {
@@ -74,7 +76,7 @@ export type StoryBlock =
       text: string[];
       chips?: string[];
       /** Visual ao lado do texto (número em destaque ou tela/vídeo). */
-      aside?: { stat?: Stat; shot?: Shot; visual?: "whatsapp" };
+      aside?: { stat?: Stat; shot?: Shot; visual?: "whatsapp" | "hypothesis" | "abchart"; flip?: boolean };
     }
   /** Uma imagem larga, ou várias lado a lado. */
   | { kind: "media"; shots: Shot[]; caption?: string }
@@ -86,6 +88,8 @@ export type StoryBlock =
   | { kind: "steps"; title?: string; items: Step[]; caption?: string }
   /** Diagrama animado da arquitetura (nomes ilustrativos). */
   | { kind: "diagram"; title?: string; text: string[]; caption?: string }
+  /** Linha do tempo horizontal (vertical no celular), sem cartões. */
+  | { kind: "timeline"; title?: string; items: Omit<Step, "shot" | "visual">[] }
   /** Aviso em destaque, estilo post-it. */
   | { kind: "note"; label?: string; text: string }
   /** Frase de impacto, escrita "à mão". */
@@ -182,7 +186,7 @@ export const projects: Project[] = [
           "Todo parceiro novo do iFood passa por um portal de ativação. São seis etapas obrigatórias, cerca de 40 minutos de configuração, antes da loja ir ao ar.",
         ],
         chips: ["Pagamento · 1 min", "Entrega · 10 min", "Horário · 5 min", "Minha loja · 5 min", "Financeiro · 10 min", "Cardápio · 10 min", "Conclusão"],
-        aside: { stat: { value: "~40 min", label: "de configuração, em 6 etapas obrigatórias", sub: "antes da loja ir ao ar" } },
+        aside: { stat: { tone: "blue", value: "~40 min", label: "de configuração, em 6 etapas obrigatórias", sub: "antes da loja ir ao ar" } },
       },
       {
         kind: "text",
@@ -195,6 +199,7 @@ export const projects: Project[] = [
         ],
         aside: {
           stat: {
+            tone: "pink",
             count: { to: 17258 },
             label: "sessões web sem nenhuma ajuda em tempo real",
             sub: "entre janeiro e março de 2026",
@@ -219,6 +224,7 @@ export const projects: Project[] = [
           "Se a inteligência da Diana estivesse dentro do portal, o parceiro resolveria a dúvida sem sair do fluxo e chegaria ao primeiro pedido mais rápido e com mais qualidade.",
           "O obstáculo: pelo roadmap normal levaria meses para entrar na fila de desenvolvimento, e exigiria alinhar a prioridade de dois times. O portal e a Diana são times separados, com backlogs próprios.",
         ],
+        aside: { visual: "hypothesis", flip: true },
       },
       {
         kind: "text",
@@ -288,7 +294,7 @@ export const projects: Project[] = [
         ],
       },
       {
-        kind: "steps",
+        kind: "timeline",
         title: "Cinco dias, do zero ao MVP",
         items: [
           { label: "Dia 1", title: "Entender", text: "A arquitetura, com os devs que a construíram." },
@@ -296,8 +302,11 @@ export const projects: Project[] = [
           { label: "Dia 5", title: "MVP rodando", text: "Internamente, já usável." },
           { label: "Depois", title: "Iterar", text: "Ajustes finos da engenharia." },
         ],
-        caption:
-          "o inédito: eu já abria MR em ajustes pontuais. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.",
+      },
+      {
+        kind: "note",
+        label: "o inédito",
+        text: "Eu já abria merge request em ajustes pontuais. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.",
       },
       {
         kind: "split",
@@ -321,8 +330,8 @@ export const projects: Project[] = [
           "A Diana conversando com um parceiro dentro do portal, no desktop e no celular",
           1040,
           874,
-          [641, 520, "var(--color-note-3)", 130, 60, 560, 470.6],
-          { video: "diana-mobile", alt: "A mesma conversa no celular", x: 34, y: 150, w: 150, h: 308 },
+          [641, 520, "var(--color-note-3)", 112, 50, 500, 420.4],
+          { video: "diana-mobile", alt: "A mesma conversa no celular", x: 22, y: 150, w: 150, h: 308 },
         ),
       },
       {
@@ -352,11 +361,7 @@ export const projects: Project[] = [
           "O que mudou foi a qualidade do setup, e isso apareceu na etapa seguinte: mais parceiros chegando à primeira venda.",
           "Portal → 1º pedido: +1,10 p.p. Portal → Ativado: 0,00 p.p. Foram 5.470 parceiros no controle e 5.522 na variante, medidos no painel oficial.",
         ],
-      },
-      {
-        kind: "note",
-        label: "leitura direcional",
-        text: "O teste não tem significância estatística. Os números mostram a direção do efeito, não uma prova.",
+        aside: { visual: "abchart" },
       },
       {
         kind: "steps",

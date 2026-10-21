@@ -3,7 +3,9 @@ import { ArchitectureDiagram } from "./ArchitectureDiagram";
 import { CountUp } from "./CountUp";
 import { Reveal } from "./Reveal";
 import { ShotFrame } from "./ShotFrame";
-import { LauncherSim, TerminalSim, WhatsAppPhone } from "./Sims";
+import { ABChart } from "./ABChart";
+import { HypothesisSketch, LauncherSim, TerminalSim } from "./Sims";
+import { WhatsAppPhone } from "./WhatsAppPhone";
 
 function Prose({
   eyebrow,
@@ -47,11 +49,16 @@ function Caption({ children }: { children: string }) {
   return <p className="mt-4 text-center font-hand text-2xl text-ink-muted">{children}</p>;
 }
 
+const TONES = {
+  lime: "-rotate-1 bg-accent",
+  pink: "rotate-1 bg-note-2",
+  blue: "-rotate-1 bg-note-5",
+} as const;
+
 function StatCard({ item, index = 0, className = "" }: { item: Stat; index?: number; className?: string }) {
+  const tone = TONES[item.tone ?? (index % 2 ? "pink" : "lime")];
   return (
-    <div
-      className={`flex flex-col justify-center rounded-card p-8 shadow-note ${index % 2 ? "rotate-1 bg-note-2" : "-rotate-1 bg-accent"} ${className}`}
-    >
+    <div className={`flex flex-col justify-center rounded-card p-8 shadow-note ${tone} ${className}`}>
       <p className="font-display text-5xl font-bold tracking-tight md:text-6xl">
         {item.count ? <CountUp {...item.count} /> : item.value}
       </p>
@@ -68,12 +75,16 @@ function Block({ block }: { block: StoryBlock }) {
         <Prose eyebrow={block.eyebrow} title={block.title} text={block.text} chips={block.chips} />
       );
       if (!block.aside) return <div className="max-w-3xl">{prose}</div>;
-      const { stat, shot, visual } = block.aside;
+      const { stat, shot, visual, flip } = block.aside;
       return (
         <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
-          {prose}
+          <div className={flip ? "md:order-2" : ""}>{prose}</div>
           {visual === "whatsapp" ? (
             <WhatsAppPhone />
+          ) : visual === "hypothesis" ? (
+            <HypothesisSketch />
+          ) : visual === "abchart" ? (
+            <ABChart />
           ) : shot ? (
             <ShotFrame shot={shot} className="shadow-note" />
           ) : (
@@ -155,6 +166,39 @@ function Block({ block }: { block: StoryBlock }) {
         </div>
       );
     }
+
+    case "timeline":
+      return (
+        <div>
+          {block.title && <h2 className="mb-10 text-3xl font-semibold md:text-4xl">{block.title}</h2>}
+          <ol className="relative grid gap-8 md:grid-cols-4 md:gap-6">
+            {/* trilho: vertical no celular, horizontal no desktop; o trecho rosa vai até o último item */}
+            <span aria-hidden className="absolute top-2 bottom-2 left-[14px] w-1 rounded-chip bg-line md:hidden" />
+            <span aria-hidden className="absolute top-[14px] right-0 left-0 hidden h-1 rounded-chip bg-line md:block" />
+            <span aria-hidden className="absolute top-[14px] left-0 hidden h-1 w-[75%] rounded-chip bg-cta md:block" />
+            {block.items.map((item, i) => {
+              const last = i === block.items.length - 1;
+              return (
+                <li key={item.title} className="relative pl-14 md:pt-14 md:pl-0">
+                  <span
+                    aria-hidden
+                    className={`absolute top-0 left-0 grid size-8 place-items-center rounded-full text-sm font-bold ${
+                      last ? "border-2 border-dashed border-cta bg-surface text-cta" : "bg-cta text-on-cta"
+                    }`}
+                  >
+                    {last ? "…" : i + 1}
+                  </span>
+                  <span className="rounded-chip bg-accent px-3 py-1 text-xs font-bold tracking-wide uppercase">
+                    {item.label}
+                  </span>
+                  <h3 className="mt-3 text-xl font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-ink-muted">{item.text}</p>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      );
 
     case "diagram":
       return (
