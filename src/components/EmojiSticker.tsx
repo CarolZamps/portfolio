@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { sfx } from "@/lib/sfx";
 import { stickerHover, stickerIn } from "./stickerMotion";
 
 /** Emoji como sticker die-cut: cola suavemente quando entra na tela. */
@@ -33,6 +34,7 @@ export function EmojiSticker({
       viewport={{ once: true, amount: 0.8 }}
       transition={{ type: "spring", stiffness: 300, damping: 22 }}
       whileHover={stickerHover(reduce)}
+      onHoverStart={() => sfx("pop", 0.7)}
     >
       {emoji}
     </motion.span>

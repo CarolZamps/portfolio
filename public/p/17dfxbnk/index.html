@@ -311,6 +311,11 @@ ul.ticks.tight{gap:10px}
   .wab.typing{display:none}
   .wab.typing span{animation:none!important}}
 
+/* botão de som: desligado por padrão (public/sfx.js) */
+#sfx .son{display:none}
+#sfx[aria-pressed="true"] .son{display:inline}
+#sfx[aria-pressed="true"] .soff{display:none}
+
 /* painéis coloridos no lugar do fundo preto */
 .panel{border-radius:20px;padding:8px}
 .panel.blue{background:var(--mist)}
@@ -1300,6 +1305,7 @@ ul.ticks.tight{gap:10px}
     <div class="track"><div class="fill" id="fill"></div></div>
     <span class="count" id="count">1 / 17</span>
     <div class="nav">
+      <button id="sfx" type="button" aria-pressed="false" aria-label="Ligar o som" title="Ligar o som"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5z" fill="currentColor" stroke="none"/><g class="son"><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></g><path class="soff" d="m16 9.5 5 5m0-5-5 5"/></svg></button>
       <button id="prev" aria-label="Slide anterior">&#8592;</button>
       <button id="next" aria-label="Próximo slide">&#8594;</button>
     </div>
@@ -1308,6 +1314,7 @@ ul.ticks.tight{gap:10px}
 
 </div>
 
+<script src="/sfx.js"></script>
 <script>
 (function(){
   var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
@@ -1319,6 +1326,43 @@ ul.ticks.tight{gap:10px}
       next = document.getElementById('next');
 
   function checkMobile(){ mobile = window.matchMedia('(max-width:760px)').matches; }
+
+
+  // ---- som: nada toca até a pessoa ligar o botão (public/sfx.js) ----
+  var soundT = [], lastShown = -1;
+  function snd(name, vol){ try { if (window.Sfx) { window.Sfx.play(name, vol); } } catch(e){} }
+  function soundStop(){ soundT.forEach(clearTimeout); soundT = []; }
+  function at_(ms, fn){ soundT.push(setTimeout(fn, ms)); }
+  function soundScene(slide){
+    soundStop();
+    if (mobile || reduced) return;
+    // celular do WhatsApp: as mensagens chegam nos mesmos tempos da animação
+    if (slide.querySelector('.waphone')) {
+      at_(1600, function(){ snd('msg-in'); });
+      at_(3200, function(){ snd('msg-out'); });
+      at_(5600, function(){ snd('msg-in'); });
+    }
+    // marca-texto sendo passado
+    slide.querySelectorAll('.mark').forEach(function(m){
+      var d = parseFloat(getComputedStyle(m).transitionDelay) || 0;
+      at_(d * 1000, function(){ snd('swish'); });
+    });
+    // terminal: teclas digitando o pedido e as linhas aparecendo
+    if (slide.querySelector('.ttype')) {
+      for (var k = 0; k < 22; k++) { at_(k * 62, function(){ snd('tick', .8); }); }
+      slide.querySelectorAll('.tln.sq').forEach(function(l){
+        var d = parseFloat(l.style.animationDelay) || 0;
+        at_(d * 1000, function(){ snd('msg-in', .5); });
+      });
+    }
+    // launcher: hover e abertura
+    if (slide.querySelector('.lnch')) {
+      at_(2300, function(){ snd('pop'); });
+      at_(2550, function(){ snd('msg-in', .6); });
+    }
+    // barras do gráfico crescendo
+    if (slide.querySelector('.abbar')) { at_(350, function(){ snd('swish', .8); }); }
+  }
 
   function show(n){
     i = Math.max(0, Math.min(slides.length - 1, n));
@@ -1336,6 +1380,9 @@ ul.ticks.tight{gap:10px}
     if (slides[i].querySelector('#flow')) { flowPlay(); } else { flowStop(); }
     if (slides[i].classList.contains('cover')) { coverPlay(); } else { coverStop(); }
     countUp(slides[i]);
+    if (lastShown !== -1 && lastShown !== i) { snd('click', .6); }
+    lastShown = i;
+    soundScene(slides[i]);
     fitMedia(slides[i]);
     if (!mobile) { try { slides[i].scrollTop = 0; } catch(e){} }
   }
@@ -1392,17 +1439,21 @@ ul.ticks.tight{gap:10px}
     cur.style.transition = '';
 
     coverT.push(setTimeout(function(){
+      snd('click');
       cover.classList.add('c1');
       at(corners().tl[0], corners().tl[1]);
     }, 240));
     coverT.push(setTimeout(function(){
+      snd('click');
       cover.classList.add('c2');
       at(corners().br[0], corners().br[1]);
     }, 900));
     coverT.push(setTimeout(function(){ cover.classList.add('c3'); }, 1620));
     coverT.push(setTimeout(function(){ cover.classList.add('c4'); }, 1900));
+    // teclas acompanham o título sendo digitado
+    for (var tk = 0; tk < 15; tk++) { coverT.push(setTimeout(function(){ snd('tick', .8); }, 1950 + tk * 88)); }
     coverT.push(setTimeout(function(){ var q = corners(); at(q.hl[0], q.hl[1]); }, 2900));
-    coverT.push(setTimeout(function(){ cover.classList.add('c5'); }, 3250));
+    coverT.push(setTimeout(function(){ snd('swish'); cover.classList.add('c5'); }, 3250));
     coverT.push(setTimeout(function(){ cover.classList.add('c6'); }, 4000));
     coverT.push(setTimeout(function(){ var q = corners(); at(q.tag[0], q.tag[1]); }, 4420));
     coverT.push(setTimeout(function(){ cover.classList.add('c7'); }, 4760));
@@ -1513,6 +1564,22 @@ ul.ticks.tight{gap:10px}
 
   prev.addEventListener('click', function(){ go(-1); });
   next.addEventListener('click', function(){ go(1); });
+
+  // ---- botão de som ----
+  (function(){
+    var b = document.getElementById('sfx');
+    if (!b) return;
+    function sync(){
+      var on = !!(window.Sfx && window.Sfx.enabled);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      var t = on ? 'Desligar o som' : 'Ligar o som';
+      b.setAttribute('aria-label', t); b.title = t;
+    }
+    b.addEventListener('click', function(){ if (window.Sfx) { window.Sfx.toggle(); } });
+    window.addEventListener('sfx-change', sync);
+    sync();
+  })();
+
   document.addEventListener('keydown', function(e){
     if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) return;
     var k = e.key;

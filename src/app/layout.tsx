@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Caveat, Inter } from "next/font/google";
+import Script from "next/script";
 import { DieCutFilter } from "@/components/DieCutFilter";
 import { Header } from "@/components/Header";
+import { SoundToggle } from "@/components/SoundToggle";
 import { share, shareMetadata, site } from "@/data/site";
 import "./globals.css";
 
@@ -38,6 +40,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <DieCutFilter />
+        <Script src="/sfx.js" strategy="afterInteractive" />
+        <SoundToggle />
         <Header />
         <main className="flex-1">{children}</main>
         <footer className="px-6 py-10 text-center font-hand text-2xl text-ink-muted">

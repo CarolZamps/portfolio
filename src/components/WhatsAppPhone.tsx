@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import { sfx } from "@/lib/sfx";
 
 /**
  * A Diana só existia aqui: conversa de WhatsApp, fora do portal. A conversa acontece
@@ -35,7 +36,12 @@ export function WhatsAppPhone() {
     }
     if (!inView) return;
     setN(0);
-    const timers = SCRIPT.map((s, i) => window.setTimeout(() => setN(i + 1), s.at));
+    const timers = SCRIPT.map((s, i) =>
+      window.setTimeout(() => {
+        setN(i + 1);
+        if (s.kind !== "typing") sfx(s.kind === "in" ? "msg-in" : "msg-out");
+      }, s.at),
+    );
     return () => timers.forEach(window.clearTimeout);
   }, [inView, reduce]);
 

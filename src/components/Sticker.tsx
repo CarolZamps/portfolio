@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from "motion/react";
 import { useRef, useState } from "react";
 import { noteBg, type Tool } from "@/data/projects";
+import { sfx } from "@/lib/sfx";
 import { stickerHover, stickerIn } from "./stickerMotion";
 
 /** Hash simples → mesma "bagunça" a cada reload. */
@@ -70,6 +71,7 @@ export function Sticker({ tool, index, baseDelay = 0.15 }: Props) {
       onHoverStart={() => {
         keepNoteOnScreen();
         setHover(true);
+        sfx("peel");
       }}
       onHoverEnd={() => setHover(false)}
       onFocus={() => {

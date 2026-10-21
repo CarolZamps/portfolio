@@ -2,6 +2,7 @@
 
 import { useReducedMotion } from "motion/react";
 import { useEffect, useRef } from "react";
+import { sfx } from "@/lib/sfx";
 
 /**
  * Abertura do case, portada da capa do deck: um cursor "Carol" desenha um frame de
@@ -75,22 +76,29 @@ export function CaseIntro({
 
     const run = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
     run(240, () => {
+      sfx("click");
       el.classList.add("c1");
       const [x, y] = corners().tl;
       at(x, y);
     });
     run(900, () => {
+      sfx("click");
       el.classList.add("c2");
       const [x, y] = corners().br;
       at(x, y);
     });
     run(1620, () => el.classList.add("c3"));
     run(1900, () => el.classList.add("c4"));
+    // teclas acompanham a digitação do título (15 letras em ~1,3 s)
+    for (let k = 0; k < 15; k++) run(1950 + k * 88, () => sfx("tick", 0.8));
     run(2900, () => {
       const [x, y] = corners().hl;
       at(x, y);
     });
-    run(3250, () => el.classList.add("c5"));
+    run(3250, () => {
+      sfx("swish");
+      el.classList.add("c5");
+    });
     run(4000, () => el.classList.add("c6"));
     run(4420, () => {
       const [x, y] = corners().meta;
