@@ -290,6 +290,27 @@ ul.ticks.tight{gap:10px}
 .slide .tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
 @media (max-width:760px){.hypsplit{grid-template-columns:minmax(0,1fr)}.slide .tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+/* conversa do WhatsApp acontecendo: cada mensagem sobe quando chega a vez dela; reinicia ao entrar no slide */
+.wabody{gap:0}
+.wab{margin-top:.62em;overflow:hidden;animation:wapop .5s cubic-bezier(.2,.7,.3,1) var(--d,0s) both}
+@keyframes wapop{
+  from{opacity:0;transform:translateY(16px);max-height:0;margin-top:0;padding-top:0;padding-bottom:0}
+  to{opacity:1;transform:none;max-height:12em;margin-top:.62em}}
+.wab.typing{display:flex;align-items:center;gap:.3em;width:fit-content;padding:.78em .95em;
+  animation:watyping var(--v,1.2s) linear var(--d,0s) both}
+.wab.typing span{width:.5em;height:.5em;border-radius:50%;background:#9b9ba2;animation:wadot 1s ease-in-out infinite}
+.wab.typing span:nth-child(2){animation-delay:.15s}
+.wab.typing span:nth-child(3){animation-delay:.3s}
+@keyframes watyping{
+  0%{opacity:0;max-height:0;margin-top:0;padding-top:0;padding-bottom:0}
+  12%,88%{opacity:1;max-height:3em;margin-top:.62em;padding-top:.78em;padding-bottom:.78em}
+  100%{opacity:0;max-height:0;margin-top:0;padding-top:0;padding-bottom:0}}
+@keyframes wadot{0%,60%,100%{opacity:.4;transform:none}30%{opacity:1;transform:translateY(-.25em)}}
+@media (prefers-reduced-motion:reduce){
+  .wab{animation:none!important;max-height:none}
+  .wab.typing{display:none}
+  .wab.typing span{animation:none!important}}
+
 /* painéis coloridos no lugar do fundo preto */
 .panel{border-radius:20px;padding:8px}
 .panel.blue{background:var(--mist)}
@@ -788,9 +809,11 @@ ul.ticks.tight{gap:10px}
               <span class="wanm"><b>Diana &#183; iFood <i class="vfy">&#10003;</i></b><span>online</span></span>
             </div>
             <div class="wabody">
-              <div class="wab in">Oi, tudo bem? Aqui é a Diana do iFood. Como posso te ajudar?<i>11:14</i></div>
-              <div class="wab out">Estou com dúvidas para conseguir montar o meu cardápio. Você pode me ajudar com isso?<i>11:15</i></div>
-              <div class="wab in">Claro, consigo sim. Pode me contar qual é a sua dúvida, que eu vou te dar o suporte necessário.<i>11:16</i></div>
+              <div class="wab in typing" aria-hidden="true" style="--d:.4s;--v:1.2s"><span></span><span></span><span></span></div>
+              <div class="wab in" style="--d:1.6s">Oi, tudo bem? Aqui é a Diana do iFood. Como posso te ajudar?<i>11:14</i></div>
+              <div class="wab out" style="--d:3.2s">Estou com dúvidas para conseguir montar o meu cardápio. Você pode me ajudar com isso?<i>11:15</i></div>
+              <div class="wab in typing" aria-hidden="true" style="--d:4.2s;--v:1.4s"><span></span><span></span><span></span></div>
+              <div class="wab in" style="--d:5.6s">Claro, consigo sim. Pode me contar qual é a sua dúvida, que eu vou te dar o suporte necessário.<i>11:16</i></div>
             </div>
             <div class="wafoot"><span>Mensagem</span><em>&#8593;</em></div>
           </div>

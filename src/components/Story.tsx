@@ -4,7 +4,8 @@ import { CountUp } from "./CountUp";
 import { Reveal } from "./Reveal";
 import { ShotFrame } from "./ShotFrame";
 import { ABChart } from "./ABChart";
-import { HypothesisSketch, LauncherSim, TerminalSim, WhatsAppPhone } from "./Sims";
+import { HypothesisSketch, LauncherSim, TerminalSim } from "./Sims";
+import { WhatsAppPhone } from "./WhatsAppPhone";
 
 function Prose({
   eyebrow,

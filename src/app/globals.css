@@ -944,9 +944,9 @@
   flex: 1;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 0.62em;
   min-height: 0;
   padding: 1.1em 0.85em;
+  overflow: hidden;
   background-color: #e9e1d8;
   background-image: radial-gradient(rgb(21 21 21 / 0.045) 1px, transparent 1px);
   background-size: 1.7em 1.7em;
@@ -1102,4 +1102,44 @@
   font-family: var(--font-hand);
   font-size: 1.5rem;
   color: var(--color-ink);
+}
+
+/* "digitando…" do celular do WhatsApp */
+.wa-typing {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  width: fit-content;
+  padding: 0.8em 0.95em;
+  overflow: hidden;
+}
+.wa-typing span {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: #9b9ba2;
+  animation: wa-dot 1s ease-in-out infinite;
+}
+.wa-typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.wa-typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes wa-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.4;
+    transform: none;
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-0.25em);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wa-typing span {
+    animation: none;
+  }
 }
