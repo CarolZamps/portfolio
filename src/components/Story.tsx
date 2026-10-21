@@ -156,6 +156,39 @@ function Block({ block }: { block: StoryBlock }) {
       );
     }
 
+    case "timeline":
+      return (
+        <div>
+          {block.title && <h2 className="mb-10 text-3xl font-semibold md:text-4xl">{block.title}</h2>}
+          <ol className="relative grid gap-8 md:grid-cols-4 md:gap-6">
+            {/* trilho: vertical no celular, horizontal no desktop; o trecho rosa vai até o último item */}
+            <span aria-hidden className="absolute top-2 bottom-2 left-[14px] w-1 rounded-chip bg-line md:hidden" />
+            <span aria-hidden className="absolute top-[14px] right-0 left-0 hidden h-1 rounded-chip bg-line md:block" />
+            <span aria-hidden className="absolute top-[14px] left-0 hidden h-1 w-[75%] rounded-chip bg-cta md:block" />
+            {block.items.map((item, i) => {
+              const last = i === block.items.length - 1;
+              return (
+                <li key={item.title} className="relative pl-14 md:pt-14 md:pl-0">
+                  <span
+                    aria-hidden
+                    className={`absolute top-0 left-0 grid size-8 place-items-center rounded-full text-sm font-bold ${
+                      last ? "border-2 border-dashed border-cta bg-surface text-cta" : "bg-cta text-on-cta"
+                    }`}
+                  >
+                    {last ? "…" : i + 1}
+                  </span>
+                  <span className="rounded-chip bg-accent px-3 py-1 text-xs font-bold tracking-wide uppercase">
+                    {item.label}
+                  </span>
+                  <h3 className="mt-3 text-xl font-semibold">{item.title}</h3>
+                  <p className="mt-2 text-ink-muted">{item.text}</p>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      );
+
     case "diagram":
       return (
         <div className="space-y-10">

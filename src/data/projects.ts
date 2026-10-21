@@ -86,6 +86,8 @@ export type StoryBlock =
   | { kind: "steps"; title?: string; items: Step[]; caption?: string }
   /** Diagrama animado da arquitetura (nomes ilustrativos). */
   | { kind: "diagram"; title?: string; text: string[]; caption?: string }
+  /** Linha do tempo horizontal (vertical no celular), sem cartões. */
+  | { kind: "timeline"; title?: string; items: Omit<Step, "shot" | "visual">[] }
   /** Aviso em destaque, estilo post-it. */
   | { kind: "note"; label?: string; text: string }
   /** Frase de impacto, escrita "à mão". */
@@ -288,7 +290,7 @@ export const projects: Project[] = [
         ],
       },
       {
-        kind: "steps",
+        kind: "timeline",
         title: "Cinco dias, do zero ao MVP",
         items: [
           { label: "Dia 1", title: "Entender", text: "A arquitetura, com os devs que a construíram." },
@@ -296,8 +298,11 @@ export const projects: Project[] = [
           { label: "Dia 5", title: "MVP rodando", text: "Internamente, já usável." },
           { label: "Depois", title: "Iterar", text: "Ajustes finos da engenharia." },
         ],
-        caption:
-          "o inédito: eu já abria MR em ajustes pontuais. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.",
+      },
+      {
+        kind: "note",
+        label: "o inédito",
+        text: "Eu já abria merge request em ajustes pontuais. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.",
       },
       {
         kind: "split",
@@ -352,11 +357,6 @@ export const projects: Project[] = [
           "O que mudou foi a qualidade do setup, e isso apareceu na etapa seguinte: mais parceiros chegando à primeira venda.",
           "Portal → 1º pedido: +1,10 p.p. Portal → Ativado: 0,00 p.p. Foram 5.470 parceiros no controle e 5.522 na variante, medidos no painel oficial.",
         ],
-      },
-      {
-        kind: "note",
-        label: "leitura direcional",
-        text: "O teste não tem significância estatística. Os números mostram a direção do efeito, não uma prova.",
       },
       {
         kind: "steps",
