@@ -217,6 +217,78 @@ ul.ticks.tight{gap:10px}
   padding:0 .05em;transition:background-size .68s cubic-bezier(.4,0,.2,1)}
 .cover.anim.c5 .hlp,.cover:not(.anim) .hlp{background-size:100% 38%}
 
+/* ilustrações dos slides secos: hipótese, resultados, aprendizados */
+.hyp{display:flex;align-items:center;gap:clamp(12px,2.4vw,32px);margin:22px 0 4px}
+.hyp-card{flex:none;width:clamp(150px,19vw,230px);display:flex;flex-direction:column;gap:7px;padding:14px 15px;
+  background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 24px rgba(21,21,21,.07)}
+.hyp-t{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hyp-b{max-width:88%;padding:6px 10px;border-radius:12px;font-size:.74rem;line-height:1.35}
+.hyp-b.in{align-self:flex-start;background:#f0f1f4;border-top-left-radius:3px}
+.hyp-b.out{align-self:flex-end;background:#dcf8c6;border-top-right-radius:3px}
+.hyp-bar{display:block;height:7px;border-radius:4px;background:#e9eaee}
+.hyp-bar.w1{width:82%}.hyp-bar.w2{width:58%}
+.hyp-card.portal{position:relative;border-color:var(--purple)}
+.hyp-dot{align-self:flex-end;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;
+  background:#151515;color:#fff;font-weight:700;box-shadow:0 0 0 6px rgba(255,62,154,.22)}
+.hyp-arrow{flex:1;min-width:70px;max-width:190px;text-align:center;color:var(--pink)}
+.hyp-arrow svg{display:block;width:100%;height:24px;fill:none;stroke:var(--pink);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.hyp-arrow span{font-family:var(--hand);font-size:1.35rem;color:var(--ink)}
+
+.resrow{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:22px;align-items:stretch}
+.resrow .stats.two{max-width:none}
+.abchart{margin:0;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px 22px}
+.abhead{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.abhead .k{margin:0;font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.abdelta{padding:4px 11px;border-radius:999px;background:var(--pink);color:#fff;font-size:.74rem;font-weight:700;white-space:nowrap}
+.abbars{flex:1;display:flex;gap:clamp(18px,3vw,40px);align-items:flex-end;justify-content:center;margin-top:16px}
+.abcol{flex:1;max-width:150px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.abv{font-family:var(--display);font-weight:600;font-size:1.25rem;letter-spacing:-.02em}
+.abv.up{color:var(--purple)}
+.abbar{display:block;width:100%;height:calc(var(--p) * 2.3px);border-radius:12px 12px 5px 5px;transform-origin:bottom;
+  animation:abgrow 1.1s cubic-bezier(.2,.7,.3,1) .35s both}
+.abbar.ctl{background:#d9dbe2}.abbar.var{background:var(--purple)}
+@keyframes abgrow{from{transform:scaleY(0)}}
+.abl{font-size:.8rem;font-weight:600}
+.abn{font-size:.7rem;color:var(--muted)}
+
+.lsplit{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.35fr);gap:20px;align-items:center}
+.lsplit .cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:760px){
+  .hyp{flex-direction:column;align-items:stretch}
+  .hyp-card{width:100%}
+  .hyp-arrow{max-width:none;transform:rotate(90deg);height:50px;align-self:center;width:80px;min-width:0}
+  .hyp-arrow span{display:inline-block;transform:rotate(-90deg)}
+  .resrow,.lsplit{grid-template-columns:minmax(0,1fr)}
+  .lsplit .cols-2{grid-template-columns:minmax(0,1fr)}
+  .abbars{min-height:170px}
+}
+@media (prefers-reduced-motion:reduce){.abbar{animation:none}}
+
+/* revisão visual do deck */
+.card{position:relative}
+.card .ico{position:absolute;top:16px;right:16px;width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;color:var(--muted);opacity:.6}
+.card.on-lime .ico{color:#2a3d00}
+.card:has(.ico) .who{padding-right:34px}
+
+.hypsplit{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center}
+.hypsplit .hyp{flex-direction:column;align-items:center;gap:4px;margin:0}
+.hypsplit .hyp-card{width:min(300px,100%)}
+.hypsplit .hyp-arrow{flex:none;max-width:none;width:100%;height:96px;transform:none;min-width:0;display:flex;align-items:center;justify-content:center;gap:12px}
+.hypsplit .hyp-arrow span{display:inline;transform:none}
+.hypsplit .hyp-arrow svg{width:80px;height:24px;transform:rotate(90deg);flex:none}
+
+.postit{position:relative;max-width:560px;margin:30px auto 0;padding:24px 26px 18px;background:var(--lime);border-radius:4px;
+  transform:rotate(-1deg);box-shadow:0 8px 24px rgba(21,21,21,.12)}
+.postit .tape{position:absolute;top:-12px;left:50%;width:96px;height:24px;transform:translateX(-50%) rotate(2deg);
+  background:rgba(236,224,194,.92);box-shadow:0 1px 2px rgba(21,21,21,.12);
+  clip-path:polygon(0 8%,4% 0,8% 10%,12% 0,88% 0,92% 10%,96% 0,100% 8%,98% 50%,100% 92%,96% 100%,92% 90%,88% 100%,12% 100%,8% 90%,4% 100%,0 92%,2% 50%)}
+.postit .hand{display:block;margin:0 0 4px;font-size:1.7rem;transform:none}
+.postit p{margin:0;font-size:.9rem;line-height:1.5;color:#2a3d00}
+
+.slide .tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:760px){.hypsplit{grid-template-columns:minmax(0,1fr)}.slide .tools{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 /* painéis coloridos no lugar do fundo preto */
 .panel{border-radius:20px;padding:8px}
 .panel.blue{background:var(--mist)}
@@ -676,17 +748,17 @@ ul.ticks.tight{gap:10px}
         <h2 class="wide">E, quando travava, ele travava sozinho</h2>
         <div class="cols" style="margin-top:26px">
           <div class="card">
-            <p class="who">Evidência qualitativa</p>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></svg><p class="who">Evidência qualitativa</p>
             <h3>A mesma dor, pesquisa após pesquisa</h3>
             <p>Entrevistas e forms recorrentes no produto apontavam falta de suporte durante a ativação.</p>
           </div>
           <div class="card">
-            <p class="who">O que o portal oferecia</p>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h7"/></svg><p class="who">O que o portal oferecia</p>
             <h3>Um FAQ estático</h3>
             <p>Perguntas frequentes no rodapé da tela. Nenhum canal para tirar dúvida no momento em que ela aparece.</p>
           </div>
           <div class="card on-lime">
-            <p class="who">Volume desatendido</p>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"/></svg><p class="who">Volume desatendido</p>
             <h3>17.258 sessões web</h3>
             <p>Entre janeiro e março de 2026, sem nenhuma ajuda em tempo real no caminho.</p>
           </div>
@@ -727,10 +799,28 @@ ul.ticks.tight{gap:10px}
 
     <!-- 5 · HIPÓTESE -->
     <section class="slide" data-t="A hipótese">
-      <div class="wrap">
-        <p class="eyebrow">A hipótese</p>
+      <div class="wrap split hypsplit">
+        <div>
+          <p class="eyebrow">A hipótese</p>
         <p class="big">Se a inteligência da Diana estivesse <span class="mark">dentro do portal,</span> o parceiro resolveria a dúvida sem sair do fluxo e chegaria ao primeiro pedido mais rápido e com mais qualidade.</p>
-        <p class="note purple"><strong>O obstáculo:</strong> pelo roadmap normal levaria meses para entrar na fila de desenvolvimento, e exigiria alinhar a prioridade de dois times. O portal e a Diana são times separados, com backlogs próprios.</p>
+          <p class="note purple"><strong>O obstáculo:</strong> pelo roadmap normal levaria meses para entrar na fila de desenvolvimento, e exigiria alinhar a prioridade de dois times. O portal e a Diana são times separados, com backlogs próprios.</p>
+        </div>
+        <div class="hyp" aria-hidden="true">
+          <div class="hyp-card">
+            <span class="hyp-t">WhatsApp</span>
+            <span class="hyp-b in">Oi, aqui é a Diana</span>
+            <span class="hyp-b out">preciso de ajuda…</span>
+          </div>
+          <div class="hyp-arrow">
+            <svg viewBox="0 0 120 24"><path d="M2 12H110" stroke-dasharray="6 6"/><path d="M104 5l12 7-12 7"/></svg>
+            <span>e se ela estivesse aqui?</span>
+          </div>
+          <div class="hyp-card portal">
+            <span class="hyp-t">Portal · setup</span>
+            <i class="hyp-bar w1"></i><i class="hyp-bar w2"></i><i class="hyp-bar w1"></i>
+            <span class="hyp-dot">?</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -978,7 +1068,7 @@ ul.ticks.tight{gap:10px}
           <div class="step done"><p class="d">Dia 5</p><p>MVP rodando internamente, já usável</p></div>
           <div class="step"><p class="d">Depois</p><p>Iterações e ajustes finos da engenharia</p></div>
         </div>
-        <p class="note"><strong>O que foi inédito:</strong> eu já abria merge request antes, mas em ajustes pontuais no produto existente. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.</p>
+        <aside class="postit"><span class="tape"></span><span class="hand">o inédito</span><p>Eu já abria merge request antes, mas em ajustes pontuais no produto existente. Aqui foi uma funcionalidade nova inteira, da concepção à produção, construída por designers.</p></aside>
       </div>
     </section>
 
@@ -1086,7 +1176,8 @@ ul.ticks.tight{gap:10px}
       <div class="wrap">
         <p class="eyebrow">Resultados · teste A/B, base crescente (30/30 → 50/50) · 26.08 a 21.09</p>
         <h2 class="wide">Um setup com mais qualidade leva o parceiro à primeira venda</h2>
-        <div class="stats two">
+        <div class="resrow">
+          <div class="stats two">
           <div class="stat up">
             <p class="k">Ativado → 1º pedido</p>
             <p class="v"><span class="num" data-to="1.60" data-dec="2" data-pre="+">+1,60</span> <small>p.p.</small></p>
@@ -1098,6 +1189,14 @@ ul.ticks.tight{gap:10px}
             <p class="n">primeiros pedidos incrementais no período</p>
           </div>
         </div>
+          <figure class="abchart" role="img" aria-label="Taxa de Ativado para primeiro pedido: 51,00% no controle e 52,68% na variante">
+            <div class="abhead"><p class="k">Controle × variante</p><span class="abdelta">+1,60 p.p.</span></div>
+            <div class="abbars">
+              <div class="abcol"><span class="abv">51,00%</span><i class="abbar ctl" style="--p:51"></i><span class="abl">Controle</span><span class="abn">5.470 parceiros</span></div>
+              <div class="abcol"><span class="abv up">52,68%</span><i class="abbar var" style="--p:52.68"></i><span class="abl">Variante</span><span class="abn">5.522 parceiros</span></div>
+            </div>
+          </figure>
+        </div>
         <p class="lede" style="margin-top:20px">O que mudou foi a <strong>qualidade</strong> do setup, e isso apareceu na etapa seguinte: mais parceiros chegando à primeira venda.</p>
       </div>
     </section>
@@ -1107,7 +1206,9 @@ ul.ticks.tight{gap:10px}
       <div class="wrap">
         <p class="eyebrow">O que eu tirei disso</p>
         <h2 class="wide">Aprendizados</h2>
-        <div class="cols-2" style="margin-top:22px">
+        <div class="lsplit" style="margin-top:22px">
+          <figure class="media panel lime"><video class="vid" poster="/p/17dfxbnk/campo-poster.jpg" muted loop playsinline preload="metadata"><source src="/p/17dfxbnk/campo.mp4" type="video/mp4"><source src="/p/17dfxbnk/campo.webm" type="video/webm"></video></figure>
+          <div class="cols-2">
           <div class="card">
             <h3>A fronteira ficou invisível, a profundidade não</h3>
             <p>Consigo construir e subir código. A rota no Kong continua sendo da engenharia, e saber onde eu paro é parte do trabalho.</p>
@@ -1125,6 +1226,7 @@ ul.ticks.tight{gap:10px}
             <p>O que destravou não foi só a ferramenta. Foi conseguir provar a hipótese sem disputar a prioridade de dois backlogs.</p>
           </div>
         </div>
+        </div>
       </div>
     </section>
 
@@ -1135,19 +1237,19 @@ ul.ticks.tight{gap:10px}
         <h2 class="wide">Como a IA entrou no meu dia a dia</h2>
         <div class="cols" style="margin-top:22px">
           <div class="card">
-            <p class="who">No produto</p>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><path d="M16.5 13v7M13 16.5h7"/></svg><p class="who">No produto</p>
             <h3>Design system direto no código</h3>
             <p>Reformulei os componentes do nosso produto atualizando o design system, com ganhos medidos em conversão sem mudar a jornada.</p>
             <p>A Diana no portal nasceu daí.</p>
           </div>
           <div class="card on-lime">
-            <p class="who">No time</p>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 19c.5-3.4 2.7-5 5.5-5s5 1.6 5.5 5M15 14.4c2.6-.4 4.8.8 5.5 4.1"/></svg><p class="who">No time</p>
             <h3>Guilda de IA e workshop</h3>
             <p>Toco a guilda de IA do time de parceiros, com cerca de 15 designers.</p>
             <p>No workshop que conduzi, todos abriram o primeiro merge request com um componente.</p>
           </div>
           <div class="card on-mist">
-            <p class="who">Fora do trabalho</p>
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/></svg><p class="who">Fora do trabalho</p>
             <h3>Construo o que eu preciso</h3>
             <p>Criei meus próprios aplicativos para organização e acompanhamento de desempenho.</p>
             <p>É onde eu testo ferramenta nova antes de levar para o time.</p>
